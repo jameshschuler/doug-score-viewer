@@ -1,38 +1,35 @@
 using DougScoreViewerAPI.Models;
+using DougScoreViewerAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DougScoreViewerAPI.Controllers;
 
 [ApiController]
-[Route("api/v1/[controller]")]
+[Route("api/v1/dougscore")]
 public class DougScoreController : BaseController<DougScoreController>
 {
     private readonly ILogger<DougScoreController> _logger;
+    private readonly IDougScoreService _dougScoreService;
 
-    public DougScoreController(ILogger<DougScoreController> logger)
+    public DougScoreController(ILogger<DougScoreController> logger, IDougScoreService dougScoreService)
     {
         _logger = logger;
+        _dougScoreService = dougScoreService;
     }
 
     [HttpGet]
     public ActionResult<ApiResponse<DougScoreResponse>> Search()
     {
-        var t = new List<DougScore>()
-        {
-            new DougScore(null, null, null, null, null, 0)
-        };
-        var x = new DougScoreResponse(t);
-        var response = new ServiceResponse<DougScoreResponse>()
-        {
-            Data = x
-        };
+        var response = _dougScoreService.GetDougScores();
 
         return HandleResponse(response, null, "Doug Scores");
     }
     
-    [HttpPost]
+    [HttpPost("sync")]
     public IActionResult Sync()
     {
-        return Ok();
+        _logger.LogDebug("Sync...");
+        _dougScoreService.SyncDougScores();
+        return Ok(new { message = "Hello" });
     }
 }

@@ -1,14 +1,24 @@
+using AutoMapper;
+using DougScoreViewerAPI.Entities;
+using DougScoreViewerAPI.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<MyContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DougScoreDatabase")));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+builder.Services.AddScoped<IDougScoreService, DougScoreService>();
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+var app = builder.Build();
+ 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
