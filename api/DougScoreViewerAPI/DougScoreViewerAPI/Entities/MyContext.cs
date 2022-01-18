@@ -33,25 +33,4 @@ public class MyContext: DbContext
             .WithOne(e => e.DougScore)
             .HasForeignKey<DougScore>(e => e.VehicleId);
     }
-    
-    // public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    // {
-    //     var entries = ChangeTracker.Entries().Where(e => e.Entity is DougScore 
-    //                                                      && e.State is EntityState.Added or EntityState.Modified);
-    //     
-    //     foreach (var entityEntry in entries)
-    //     {
-    //         if (entityEntry.State == EntityState.Added)
-    //         {
-    //             ((DougScore)entityEntry.Entity).CreatedAt = DateTime.Now;
-    //         }
-    //
-    //         if (entityEntry.State == EntityState.Modified)
-    //         {
-    //             ((DougScore)entityEntry.Entity).UpdatedAt = DateTime.Now;
-    //         }
-    //     }
-    //
-    //     return await base.SaveChangesAsync(cancellationToken);
-    // }
 }

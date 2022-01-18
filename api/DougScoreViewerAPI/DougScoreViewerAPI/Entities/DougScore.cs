@@ -36,11 +36,7 @@ public class DougScore : BaseEntity
     [Column("upload_id")]
     public string? UploadId { get; init; }
     
-    [NotMapped]
-    public IXLCell? CL { get; set; }
-
     //
-    
     public virtual DailyScore? DailyScore { get; init; }
     
     public virtual WeekendScore? WeekendScore { get; init; }

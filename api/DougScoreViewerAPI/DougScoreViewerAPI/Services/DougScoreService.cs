@@ -79,7 +79,6 @@ public class DougScoreService : IDougScoreService
         var uploadId = Guid.NewGuid().ToString();
         var dougScores = rows.Select(row => new DougScore()
         {
-            CL = row.Cell(17),
             City = row.Cell(18).GetString(),
             State = row.Cell(19).GetString(),
             VideoLink = GetVideoLink(row.Cell(17)),
