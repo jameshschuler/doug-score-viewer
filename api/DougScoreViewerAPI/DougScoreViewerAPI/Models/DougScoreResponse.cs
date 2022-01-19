@@ -2,4 +2,4 @@ using DougScoreViewerAPI.Models.DTOs;
 
 namespace DougScoreViewerAPI.Models;
 
-public record DougScoreResponse(IEnumerable<DougScoreDto> DougScores);
+public record DougScoreResponse(IEnumerable<DougScoreDto> DougScores, int TotalCount);

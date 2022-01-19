@@ -2,7 +2,6 @@ using System.Web;
 using AutoMapper;
 using ClosedXML.Excel;
 using DougScoreViewerAPI.Entities;
-using DougScoreViewerAPI.Enums;
 using DougScoreViewerAPI.Models;
 using DougScoreViewerAPI.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,7 @@ namespace DougScoreViewerAPI.Services;
 
 public interface IDougScoreService
 {
-    ServiceResponse<DougScoreResponse>  GetDougScores();
+    ServiceResponse<DougScoreResponse>  SearchDougScores(SearchDougScoresRequest request);
     Task<ServiceResponse<SyncDougScoresResponse>> SyncDougScores();
 }
 
@@ -22,7 +21,7 @@ public class DougScoreService : IDougScoreService
     private readonly MyContext _context;
     private readonly ILogger<DougScoreService> _logger;
 
-    private const int PageLimit = 25;
+    private const int PageLimit = 15;
 
     public DougScoreService(IWebHostEnvironment environment, IMapper mapper, MyContext context, ILogger<DougScoreService> logger)
     {
@@ -32,35 +31,30 @@ public class DougScoreService : IDougScoreService
         _logger = logger;
     }
 
-    public ServiceResponse<DougScoreResponse> GetDougScores()
+    public ServiceResponse<DougScoreResponse> SearchDougScores(SearchDougScoresRequest request)
     {
-        try
-        {
-            var dougScores = _context.DougScores!.Take(PageLimit)
-                .Include("Vehicle").ToList();
-            var converted = dougScores.Select(e => 
-                new DougScoreDto(
-                    new FilmLocationDto(e.City, e.State), 
-                    new VehicleDto(e.Vehicle?.Make, e.Vehicle?.Model, e.Vehicle?.Year, e.Vehicle?.OriginCountry),
-                    null, null, e.VideoLink, e.TotalDougScore)
-                {
-                    Id = e.Id
-                });
-            
-            var response = new ServiceResponse<DougScoreResponse>()
+        var dougScores = _context.DougScores!
+            .Include(e => e.Vehicle)
+            .Where(e => e.Vehicle!.Make == request.Make)
+            .OrderBy(e => e.TotalDougScore)
+            .Take(PageLimit);
+        
+        var dougScoreDtos = dougScores.ToList().Select(e => 
+            new DougScoreDto(
+                new FilmingLocationDto(e.City, e.State), 
+                new VehicleDto(e.Vehicle?.Make, e.Vehicle?.Model, e.Vehicle?.Year, e.Vehicle?.OriginCountry),
+                null,
+                null, 
+                e.VideoLink, 
+                e.TotalDougScore)
             {
-                Data = new DougScoreResponse(converted)
-            };
+                Id = e.Id
+            }).ToList();
 
-            return response;
-        }
-        catch (Exception ex)
+        return new ServiceResponse<DougScoreResponse>()
         {
-            return new ServiceResponse<DougScoreResponse>()
-            {
-                ErrorCode = ServiceErrorCode.BadRequest
-            };
-        }
+            Data = new DougScoreResponse(dougScoreDtos, dougScoreDtos.Count)
+        };
     }
     
     public async Task<ServiceResponse<SyncDougScoresResponse>> SyncDougScores()

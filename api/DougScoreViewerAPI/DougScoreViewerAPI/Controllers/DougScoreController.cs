@@ -1,6 +1,6 @@
 using DougScoreViewerAPI.Enums;
-using DougScoreViewerAPI.Extensions;
 using DougScoreViewerAPI.Models;
+using DougScoreViewerAPI.Models.DTOs;
 using DougScoreViewerAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,12 +19,25 @@ public class DougScoreController : BaseController<DougScoreController>
         _dougScoreService = dougScoreService;
     }
 
-    [HttpGet]
-    public ActionResult<ApiResponse<DougScoreResponse>> Search()
+    [HttpGet("search")]
+    public ActionResult<ApiResponse<DougScoreResponse>> Search([FromQuery]SearchDougScoresRequest request)
     {
-        var response = _dougScoreService.GetDougScores();
+        try
+        {
+            var response = _dougScoreService.SearchDougScores(request);
 
-        return HandleResponse(response, null, "Doug Scores");
+            return HandleResponse(response, null, "DougScore");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error occurred while searching...{errorMessage}", ex.Message);
+            return HandleResponse(
+                new ServiceResponse<DougScoreResponse>()
+                {
+                    ErrorCode = ServiceErrorCode.InternalServer
+                }, "Error occurred while searching! Please try again.", "DougScore");
+        }
+        
     }
     
     [HttpPost("sync")]
@@ -33,7 +46,7 @@ public class DougScoreController : BaseController<DougScoreController>
         try
         {
             var response = await _dougScoreService.SyncDougScores();
-            return HandleResponse(response, null, "Doug Scores");
+            return HandleResponse(response, null, "DougScore");
         }
         catch (Exception ex)
         {
@@ -42,7 +55,7 @@ public class DougScoreController : BaseController<DougScoreController>
             return HandleResponse(new ServiceResponse<SyncDougScoresResponse>()
             {
                 ErrorCode = ServiceErrorCode.InternalServer
-            }, "Unable to sync Doug Scores.", "Doug Scores");
+            }, "Unable to sync Doug Scores.", "DougScore");
         }
     }
 }
