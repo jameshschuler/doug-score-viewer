@@ -33,13 +33,30 @@ public class DougScoreService : IDougScoreService
 
     public ServiceResponse<DougScoreResponse> SearchDougScores(SearchDougScoresRequest request)
     {
-        var dougScores = _context.DougScores!
+        var dougScoresQuery = _context.DougScores!
             .Include(e => e.Vehicle)
-            .Where(e => e.Vehicle!.Make == request.Make)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(request.Make))
+        {
+            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Make == request.Make);
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Model))
+        {
+            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Model == request.Model);
+        }
+        
+        if (!string.IsNullOrWhiteSpace(request.Year))
+        {
+            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Year == request.Year);
+        }
+        
+        dougScoresQuery = dougScoresQuery
             .OrderBy(e => e.TotalDougScore)
             .Take(PageLimit);
-        
-        var dougScoreDtos = dougScores.ToList().Select(e => 
+            
+        var dougScoreDtos = dougScoresQuery.ToList().Select(e => 
             new DougScoreDto(
                 new FilmingLocationDto(e.City, e.State), 
                 new VehicleDto(e.Vehicle?.Make, e.Vehicle?.Model, e.Vehicle?.Year, e.Vehicle?.OriginCountry),
