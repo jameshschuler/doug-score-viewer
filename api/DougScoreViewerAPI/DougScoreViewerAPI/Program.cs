@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHealthChecks();
+
 // Add services to the container.
 builder.Services.AddDbContext<MyContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DougScoreDatabase")));
@@ -19,6 +21,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
+
+app.MapHealthChecks("/health");
  
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
