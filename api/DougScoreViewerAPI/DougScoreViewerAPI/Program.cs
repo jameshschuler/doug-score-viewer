@@ -5,9 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+System.Diagnostics.Trace.WriteLine("My message!");
 // Add services to the container.
 builder.Services.AddDbContext<MyContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DougScoreDatabase")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("POSTGRESQLCONNSTR_DougScoreDatabase")));
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<MyContext>();
