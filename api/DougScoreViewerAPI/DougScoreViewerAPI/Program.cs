@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHealthChecks();
-
 // Add services to the container.
 builder.Services.AddDbContext<MyContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DougScoreDatabase")));
+
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<MyContext>();
 
 builder.Services.AddScoped<IDougScoreService, DougScoreService>();
 
