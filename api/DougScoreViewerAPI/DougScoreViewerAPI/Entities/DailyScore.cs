@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace DougScoreViewerAPI.Entities;
 
 [Table("daily_score")]
-public class DailyScore : BaseEntity
+public record DailyScore : BaseEntity
 {
     [Column("comfort")]
     public int? Comfort { get; init; }
@@ -23,5 +24,6 @@ public class DailyScore : BaseEntity
     [Column("total")]
     public int? Total { get; init; }
     
+    [JsonIgnore]
     public virtual DougScore? DougScore { get; init; }
 }

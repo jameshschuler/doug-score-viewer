@@ -4,7 +4,7 @@ using ClosedXML.Excel;
 namespace DougScoreViewerAPI.Entities;
 
 [Table("doug_score")]
-public class DougScore : BaseEntity
+public record DougScore : BaseEntity
 {
     [Column("daily_score_id")]
     public int? DailyScoreId { get; init; }

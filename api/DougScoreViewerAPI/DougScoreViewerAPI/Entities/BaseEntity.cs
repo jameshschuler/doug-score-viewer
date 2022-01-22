@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DougScoreViewerAPI.Entities;
 
-public class BaseEntity
+public record BaseEntity
 {
     [Key, Column("id")]
     public int Id { get; init; }

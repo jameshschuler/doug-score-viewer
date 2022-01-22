@@ -35,33 +35,21 @@ public class DougScoreService : IDougScoreService
     {
         var dougScoresQuery = _context.DougScores!
             .Include(e => e.Vehicle)
+            .Include(e => e.DailyScore)
+            .Include(e => e.WeekendScore)
             .AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(request.Make))
-        {
-            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Make == request.Make);
-        }
+        dougScoresQuery = FilterDougScores(request, dougScoresQuery);
+        dougScoresQuery = OrderDougScores(request, dougScoresQuery);
 
-        if (!string.IsNullOrWhiteSpace(request.Model))
-        {
-            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Model == request.Model);
-        }
-        
-        if (!string.IsNullOrWhiteSpace(request.Year))
-        {
-            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Year == request.Year);
-        }
-        
-        dougScoresQuery = dougScoresQuery
-            .OrderBy(e => e.TotalDougScore)
-            .Take(PageLimit);
+        dougScoresQuery = dougScoresQuery.Take(PageLimit);
             
         var dougScoreDtos = dougScoresQuery.ToList().Select(e => 
             new DougScoreDto(
                 new FilmingLocationDto(e.City, e.State), 
-                new VehicleDto(e.Vehicle?.Make, e.Vehicle?.Model, e.Vehicle?.Year, e.Vehicle?.OriginCountry),
-                null,
-                null, 
+                e.Vehicle,
+                e.DailyScore,
+                e.WeekendScore, 
                 e.VideoLink, 
                 e.TotalDougScore)
             {
@@ -136,7 +124,7 @@ public class DougScoreService : IDougScoreService
         };
     }
 
-    private string GetVideoLink(IXLCell? videoLinkCell)
+    private static string GetVideoLink(IXLCell? videoLinkCell)
     {
         if (videoLinkCell is null)
         {
@@ -163,5 +151,46 @@ public class DougScoreService : IDougScoreService
         urlParams.Remove("t");
         
         return urlParams.ToString() ?? videoLink;
+    }
+
+    private static IQueryable<DougScore> FilterDougScores(SearchDougScoresRequest request, IQueryable<DougScore> dougScoresQuery)
+    {
+        if (!string.IsNullOrWhiteSpace(request.Make))
+        {
+            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Make == request.Make);
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Model))
+        {
+            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Model == request.Model);
+        }
+        
+        if (!string.IsNullOrWhiteSpace(request.Year))
+        {
+            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Year == request.Year);
+        }
+        
+        if (!string.IsNullOrWhiteSpace(request.OriginCountry))
+        {
+            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.OriginCountry == request.OriginCountry);
+        }
+
+        return dougScoresQuery;
+    }
+
+    private static IQueryable<DougScore> OrderDougScores(SearchDougScoresRequest request, IQueryable<DougScore> dougScoresQuery)
+    {
+        return dougScoresQuery = request.SortBy switch
+        {
+            "TotalDougScore" => request.SortOrder == "asc" ? 
+                dougScoresQuery.OrderBy(e => e.TotalDougScore) : dougScoresQuery.OrderByDescending(e => e.TotalDougScore),
+            "Year" => request.SortOrder == "asc" ? 
+                dougScoresQuery.OrderBy(e => e.Vehicle!.Year) : dougScoresQuery.OrderByDescending(e => e.Vehicle!.Year),
+            "DailyScore" => request.SortOrder == "asc" ? 
+                dougScoresQuery.OrderBy(e => e.DailyScore!.Total) : dougScoresQuery.OrderByDescending(e => e.DailyScore!.Total),
+            "WeekendScore" => request.SortOrder == "asc" ? 
+                dougScoresQuery.OrderBy(e => e.WeekendScore!.Total) : dougScoresQuery.OrderByDescending(e => e.WeekendScore!.Total),
+            _ => dougScoresQuery   
+        };
     }
 }

@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace DougScoreViewerAPI.Entities;
 
 [Table("vehicle")]
-public class Vehicle : BaseEntity
+public record Vehicle : BaseEntity
 {
     [Column("make")]
     public string? Make { get; init; }
@@ -17,5 +18,6 @@ public class Vehicle : BaseEntity
     [Column("year")]
     public string? Year { get; init; }
     
+    [JsonIgnore]
     public virtual DougScore? DougScore { get; init; }
 }
