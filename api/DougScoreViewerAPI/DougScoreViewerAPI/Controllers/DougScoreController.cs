@@ -1,6 +1,7 @@
 using DougScoreViewerAPI.Enums;
 using DougScoreViewerAPI.Models;
-using DougScoreViewerAPI.Models.DTOs;
+using DougScoreViewerAPI.Models.Request;
+using DougScoreViewerAPI.Models.Response;
 using DougScoreViewerAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 

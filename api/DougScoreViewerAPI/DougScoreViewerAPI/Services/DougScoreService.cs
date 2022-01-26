@@ -4,6 +4,8 @@ using ClosedXML.Excel;
 using DougScoreViewerAPI.Entities;
 using DougScoreViewerAPI.Models;
 using DougScoreViewerAPI.Models.DTOs;
+using DougScoreViewerAPI.Models.Request;
+using DougScoreViewerAPI.Models.Response;
 using Microsoft.EntityFrameworkCore;
 
 namespace DougScoreViewerAPI.Services;
@@ -30,7 +32,7 @@ public class DougScoreService : IDougScoreService
         _context = context;
         _logger = logger;
     }
-
+    
     public ServiceResponse<DougScoreResponse> SearchDougScores(SearchDougScoresRequest request)
     {
         var dougScoresQuery = _context.DougScores!
@@ -86,8 +88,8 @@ public class DougScoreService : IDougScoreService
             CreatedAt = DateTime.UtcNow,
             Vehicle = new Vehicle()
             {
-                Make = row.Cell(2).GetString(),
-                Model = row.Cell(3).GetString(),
+                Make = row.Cell(2).GetString().Trim(),
+                Model = row.Cell(3).GetString().Trim(),
                 Year = row.Cell(1).GetString(),
                 OriginCountry = row.Cell(20).GetString()
             },

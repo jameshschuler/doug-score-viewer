@@ -7,7 +7,7 @@ namespace DougScoreViewerAPI.Controllers;
 
 public class BaseController<TController> : ControllerBase
 {
-    protected ActionResult<ApiResponse<T>> HandleResponse<T>(ServiceResponse<T> serviceResponse, string? errorMessage, string entity)
+    protected ActionResult<ApiResponse<T>> HandleResponse<T>(ServiceResponse<T> serviceResponse, string? errorMessage, string? entity)
     {
         if (serviceResponse.Successful)
         {

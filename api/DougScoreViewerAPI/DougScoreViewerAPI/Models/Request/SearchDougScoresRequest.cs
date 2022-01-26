@@ -1,7 +1,7 @@
 using DougScoreViewerAPI.Models.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DougScoreViewerAPI.Models.DTOs;
+namespace DougScoreViewerAPI.Models.Request;
 
 public record SearchDougScoresRequest(
     [FromQuery(Name = "make")]string? Make,

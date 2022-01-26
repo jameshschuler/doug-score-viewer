@@ -16,6 +16,7 @@ builder.Services.AddHealthChecks()
     .AddDbContextCheck<MyContext>();
 
 builder.Services.AddScoped<IDougScoreService, DougScoreService>();
+builder.Services.AddScoped<IDataService, DataService>();
 
 builder.Services.AddControllers();
 
