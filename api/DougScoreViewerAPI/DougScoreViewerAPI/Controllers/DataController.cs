@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using DougScoreViewerAPI.Enums;
 using DougScoreViewerAPI.Models;
 using DougScoreViewerAPI.Models.Response;
@@ -37,5 +38,25 @@ public class DataController : BaseController<DougScoreController>
                     ErrorCode = ServiceErrorCode.InternalServer
                 }, "Error occurred while retrieving available makes! Please try again.", null);
         }
+    }
+
+    [HttpGet("models")]
+    public ActionResult<ApiResponse<AvailableModelsResponse>> GetAvailableModels([FromQuery][Required]string make)
+    {try
+        {
+            var response = _dataService.GetAvailableModels(make);
+
+            return HandleResponse(response, null, null);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error occurred while retrieving available models for {make}...{errorMessage}", make, ex.Message);
+            return HandleResponse(
+                new ServiceResponse<AvailableModelsResponse>()
+                {
+                    ErrorCode = ServiceErrorCode.InternalServer
+                }, $"Error occurred while retrieving available models for {make}! Please try again.", null);
+        }
+        
     }
 }

@@ -9,6 +9,8 @@ namespace DougScoreViewerAPI.Services;
 public interface IDataService
 {
     ServiceResponse<AvailableMakesResponse> GetAvailableMakes();
+    
+    ServiceResponse<AvailableModelsResponse> GetAvailableModels(string make);
 }
 
 public class DataService : IDataService
@@ -41,6 +43,20 @@ public class DataService : IDataService
         return new ServiceResponse<AvailableMakesResponse>()
         {
             Data = new AvailableMakesResponse(makes.ToList())
+        };
+    }
+
+    public ServiceResponse<AvailableModelsResponse> GetAvailableModels(string make)
+    {
+        _logger.LogInformation($"Getting available models for {make}...");
+        var query = _context.Vehicles!
+            .Where(e => e.Make == make)
+            .OrderBy(e => e.Model)
+            .Select(e => new AvailableModelDto(e.Id, e.Model!));
+        
+        return new ServiceResponse<AvailableModelsResponse>()
+        {
+            Data = new AvailableModelsResponse(query.ToList())
         };
     }
 }
