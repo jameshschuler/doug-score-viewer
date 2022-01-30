@@ -1,5 +1,3 @@
-using DougScoreViewerAPI.Models.DTOs;
-
 namespace DougScoreViewerAPI.Models.Response;
 
-public record AvailableMakesResponse(IEnumerable<AvailableMakeDto> Makes);
+public record AvailableMakesResponse(IEnumerable<AvailableMakeResponse> Makes);

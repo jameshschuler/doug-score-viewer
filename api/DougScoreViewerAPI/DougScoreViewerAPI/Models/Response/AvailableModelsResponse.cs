@@ -1,5 +1,3 @@
-using DougScoreViewerAPI.Models.DTOs;
-
 namespace DougScoreViewerAPI.Models.Response;
 
-public record AvailableModelsResponse(IEnumerable<AvailableModelDto> Models);
+public record AvailableModelsResponse(IEnumerable<AvailableModelResponse> Models);

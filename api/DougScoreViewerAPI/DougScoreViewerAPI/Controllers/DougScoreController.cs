@@ -1,4 +1,4 @@
-using DougScoreViewerAPI.Enums;
+using System.ComponentModel.DataAnnotations;
 using DougScoreViewerAPI.Models;
 using DougScoreViewerAPI.Models.Request;
 using DougScoreViewerAPI.Models.Response;
@@ -11,52 +11,31 @@ namespace DougScoreViewerAPI.Controllers;
 [Route("api/v1/dougscore")]
 public class DougScoreController : BaseController<DougScoreController>
 {
-    private readonly ILogger<DougScoreController> _logger;
     private readonly IDougScoreService _dougScoreService;
 
-    public DougScoreController(ILogger<DougScoreController> logger, IDougScoreService dougScoreService)
+    public DougScoreController(IDougScoreService dougScoreService)
     {
-        _logger = logger;
         _dougScoreService = dougScoreService;
     }
 
     [HttpGet("search")]
-    public ActionResult<ApiResponse<DougScoreResponse>> Search([FromQuery]SearchDougScoresRequest request)
-    {
-        try
-        {
-            var response = _dougScoreService.SearchDougScores(request);
-
-            return HandleResponse(response, null, "DougScore");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error occurred while searching...{errorMessage}", ex.Message);
-            return HandleResponse(
-                new ServiceResponse<DougScoreResponse>()
-                {
-                    ErrorCode = ServiceErrorCode.InternalServer
-                }, "Error occurred while searching! Please try again.", "DougScore");
-        }
-        
+    public ActionResult<ApiResponse<SearchDougScoreResponse>> Search([FromQuery]SearchDougScoresRequest request)
+    { 
+        var response = _dougScoreService.SearchDougScores(request);
+        return HandleResponse(response);
     }
-    
+
+    [HttpGet("{dougScoreId:int:min(1)}")]
+    public ActionResult<ApiResponse<GetDougScoreResponse>> Get([Required]int dougScoreId)
+    {
+        var response = _dougScoreService.GetDougScore(dougScoreId);
+        return HandleResponse(response);
+    }
+
     [HttpPost("sync")]
     public async Task<ActionResult<ApiResponse<SyncDougScoresResponse>>> Sync()
     {
-        try
-        {
-            var response = await _dougScoreService.SyncDougScores();
-            return HandleResponse(response, null, "DougScore");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error: ${message}", ex.Message);
-            
-            return HandleResponse(new ServiceResponse<SyncDougScoresResponse>()
-            {
-                ErrorCode = ServiceErrorCode.InternalServer
-            }, "Unable to sync Doug Scores.", "DougScore");
-        }
+        var response = await _dougScoreService.SyncDougScores();
+        return HandleResponse(response);
     }
 }

@@ -4,12 +4,10 @@ namespace DougScoreViewerAPI.Extensions;
 
 public static class ResponseExtensions
 {
-    public static ApiResponse<T> ToApiResponse<T>(this ServiceResponse<T> serviceResponse, string? message = null)
+    public static ApiResponse<T> ToApiResponse<T>(this ServiceResponse<T> serviceResponse)
     {
-        return new()
+        return new ApiResponse<T>
         {
-            Successful = serviceResponse.Successful,
-            Message = message,
             Data = serviceResponse.Data
         };
     }

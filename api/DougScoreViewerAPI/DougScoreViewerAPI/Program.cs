@@ -1,5 +1,5 @@
-using AutoMapper;
 using DougScoreViewerAPI.Entities;
+using DougScoreViewerAPI.Middlewares;
 using DougScoreViewerAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +18,7 @@ builder.Services.AddHealthChecks()
 builder.Services.AddScoped<IDougScoreService, DougScoreService>();
 builder.Services.AddScoped<IDataService, DataService>();
 
+builder.Services.AddCors();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -37,7 +38,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
 app.MapControllers();
+
+app.UseCors(policy => policy
+    .SetIsOriginAllowed(origin => true)
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials());
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
+app.UseAuthorization();
 
 app.Run();

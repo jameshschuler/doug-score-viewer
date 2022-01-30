@@ -3,7 +3,6 @@ using AutoMapper;
 using ClosedXML.Excel;
 using DougScoreViewerAPI.Entities;
 using DougScoreViewerAPI.Models;
-using DougScoreViewerAPI.Models.DTOs;
 using DougScoreViewerAPI.Models.Request;
 using DougScoreViewerAPI.Models.Response;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +11,8 @@ namespace DougScoreViewerAPI.Services;
 
 public interface IDougScoreService
 {
-    ServiceResponse<DougScoreResponse>  SearchDougScores(SearchDougScoresRequest request);
+    ServiceResponse<GetDougScoreResponse>  GetDougScore(int dougScoreId);
+    ServiceResponse<SearchDougScoreResponse>  SearchDougScores(SearchDougScoresRequest request);
     Task<ServiceResponse<SyncDougScoresResponse>> SyncDougScores();
 }
 
@@ -32,8 +32,38 @@ public class DougScoreService : IDougScoreService
         _context = context;
         _logger = logger;
     }
+
+    public ServiceResponse<GetDougScoreResponse> GetDougScore(int dougScoreId)
+    {
+        var dougScore = _context.DougScores!
+            .Include(e => e.Vehicle)
+            .Include(e => e.DailyScore)
+            .Include(e => e.WeekendScore)
+            .FirstOrDefault(e => e.Id == dougScoreId);
+
+        if (dougScore is null)
+        {
+            throw new KeyNotFoundException("Unable to find matching DougScore");
+        }
+
+        var dougScoreResponse = new DougScoreResponse(
+            new FilmingLocation(dougScore!.City, dougScore.State),
+            dougScore.Vehicle,
+            dougScore.DailyScore,
+            dougScore.WeekendScore,
+            dougScore.VideoLink,
+            dougScore.TotalDougScore)
+        {
+            Id = dougScore.Id
+        };
+
+        return new ServiceResponse<GetDougScoreResponse>()
+        {
+            Data = new GetDougScoreResponse(dougScoreResponse)
+        };
+    }
     
-    public ServiceResponse<DougScoreResponse> SearchDougScores(SearchDougScoresRequest request)
+    public ServiceResponse<SearchDougScoreResponse> SearchDougScores(SearchDougScoresRequest request)
     {
         var dougScoresQuery = _context.DougScores!
             .Include(e => e.Vehicle)
@@ -46,9 +76,9 @@ public class DougScoreService : IDougScoreService
 
         dougScoresQuery = dougScoresQuery.Take(PageLimit);
             
-        var dougScoreDtos = dougScoresQuery.ToList().Select(e => 
-            new DougScoreDto(
-                new FilmingLocationDto(e.City, e.State), 
+        var dougScores = dougScoresQuery.ToList().Select(e => 
+            new DougScoreResponse(
+                new FilmingLocation(e.City, e.State), 
                 e.Vehicle,
                 e.DailyScore,
                 e.WeekendScore, 
@@ -58,9 +88,9 @@ public class DougScoreService : IDougScoreService
                 Id = e.Id
             }).ToList();
 
-        return new ServiceResponse<DougScoreResponse>()
+        return new ServiceResponse<SearchDougScoreResponse>()
         {
-            Data = new DougScoreResponse(dougScoreDtos, dougScoreDtos.Count)
+            Data = new SearchDougScoreResponse(dougScores, dougScores.Count)
         };
     }
     

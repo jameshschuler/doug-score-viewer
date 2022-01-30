@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using DougScoreViewerAPI.Enums;
 using DougScoreViewerAPI.Models;
 using DougScoreViewerAPI.Models.Response;
 using DougScoreViewerAPI.Services;
@@ -11,52 +10,24 @@ namespace DougScoreViewerAPI.Controllers;
 [Route("api/v1/data")]
 public class DataController : BaseController<DougScoreController>
 {
-    private readonly ILogger<DougScoreController> _logger;
     private readonly IDataService _dataService;
 
-    public DataController(ILogger<DougScoreController> logger, IDataService dataService)
+    public DataController(IDataService dataService)
     {
-        _logger = logger;
         _dataService = dataService;
     }
     
     [HttpGet("makes")]
     public ActionResult<ApiResponse<AvailableMakesResponse>> GetAvailableMakes()
     {
-        try
-        {
-            var response = _dataService.GetAvailableMakes();
-
-            return HandleResponse(response, null, null);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error occurred while retrieving available makes...{errorMessage}", ex.Message);
-            return HandleResponse(
-                new ServiceResponse<AvailableMakesResponse>()
-                {
-                    ErrorCode = ServiceErrorCode.InternalServer
-                }, "Error occurred while retrieving available makes! Please try again.", null);
-        }
+        var response = _dataService.GetAvailableMakes();
+        return HandleResponse(response);
     }
 
     [HttpGet("models")]
     public ActionResult<ApiResponse<AvailableModelsResponse>> GetAvailableModels([FromQuery][Required]string make)
-    {try
-        {
-            var response = _dataService.GetAvailableModels(make);
-
-            return HandleResponse(response, null, null);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error occurred while retrieving available models for {make}...{errorMessage}", make, ex.Message);
-            return HandleResponse(
-                new ServiceResponse<AvailableModelsResponse>()
-                {
-                    ErrorCode = ServiceErrorCode.InternalServer
-                }, $"Error occurred while retrieving available models for {make}! Please try again.", null);
-        }
-        
+    {
+        var response = _dataService.GetAvailableModels(make);
+        return HandleResponse(response);
     }
 }

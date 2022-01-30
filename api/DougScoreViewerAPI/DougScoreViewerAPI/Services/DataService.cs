@@ -1,7 +1,5 @@
-using System.Text.RegularExpressions;
 using DougScoreViewerAPI.Entities;
 using DougScoreViewerAPI.Models;
-using DougScoreViewerAPI.Models.DTOs;
 using DougScoreViewerAPI.Models.Response;
 
 namespace DougScoreViewerAPI.Services;
@@ -35,10 +33,8 @@ public class DataService : IDataService
                 Count = e.Count()
             })
             .OrderBy(e => e.Make);
-
-
-        var makes = query
-            .Select(e => new AvailableMakeDto(e.Make!, e.Count));
+        
+        var makes = query.Select(e => new AvailableMakeResponse(e.Make!, e.Count));
         
         return new ServiceResponse<AvailableMakesResponse>()
         {
@@ -52,7 +48,7 @@ public class DataService : IDataService
         var query = _context.Vehicles!
             .Where(e => e.Make == make)
             .OrderBy(e => e.Model)
-            .Select(e => new AvailableModelDto(e.Id, e.Model!));
+            .Select(e => new AvailableModelResponse(e.Id, e.Model!));
         
         return new ServiceResponse<AvailableModelsResponse>()
         {
