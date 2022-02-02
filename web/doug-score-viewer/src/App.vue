@@ -1,21 +1,22 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/HelloWorld.vue'
+import Loading from "./components/Loading.vue";
+
+checkAPIHealth();
+
+async function checkAPIHealth() {
+  const healthCheckUrl = `${import.meta.env.VITE_API_BASE_URL}/health`;
+  const response = await fetch(healthCheckUrl);
+  const data = await response.text();
+  console.info(`API responded with...${data}`);
+}
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <main class="container is-fluid">
+    <div class="columns">
+      <router-view class="column is-12-touch"></router-view>
+    </div>
+  </main>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style lang="scss"></style>
