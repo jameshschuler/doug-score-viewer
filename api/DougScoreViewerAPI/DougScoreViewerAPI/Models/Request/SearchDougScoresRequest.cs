@@ -9,4 +9,6 @@ public record SearchDougScoresRequest(
     [FromQuery(Name = "year")]string? Year,
     [FromQuery(Name = "originCountry")] string? OriginCountry,
     [FromQuery(Name="sortBy")][SortBy] string SortBy = "TotalDougScore",
-    [FromQuery(Name = "sortOrder")] string SortOrder = "desc");
+    [FromQuery(Name = "sortOrder")] string SortOrder = "desc",
+    [FromQuery(Name = "page")]int Page = 1);
+    

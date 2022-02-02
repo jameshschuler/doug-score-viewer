@@ -23,7 +23,7 @@ public class DougScoreService : IDougScoreService
     private readonly MyContext _context;
     private readonly ILogger<DougScoreService> _logger;
 
-    private const int PageLimit = 15;
+    private const int PageSizeLimit = 5;
 
     public DougScoreService(IWebHostEnvironment environment, IMapper mapper, MyContext context, ILogger<DougScoreService> logger)
     {
@@ -74,7 +74,8 @@ public class DougScoreService : IDougScoreService
         dougScoresQuery = FilterDougScores(request, dougScoresQuery);
         dougScoresQuery = OrderDougScores(request, dougScoresQuery);
 
-        dougScoresQuery = dougScoresQuery.Take(PageLimit);
+        var dougScoreCount = dougScoresQuery.Count();
+        dougScoresQuery = dougScoresQuery.Skip((request.Page - 1) * PageSizeLimit).Take(PageSizeLimit);
             
         var dougScores = dougScoresQuery.ToList().Select(e => 
             new DougScoreResponse(
@@ -90,7 +91,12 @@ public class DougScoreService : IDougScoreService
 
         return new ServiceResponse<SearchDougScoreResponse>()
         {
-            Data = new SearchDougScoreResponse(dougScores, dougScores.Count)
+            Data = new SearchDougScoreResponse(
+                dougScores, 
+                dougScores.Count(),
+                dougScoreCount, 
+                request.Page, 
+                (int)Math.Ceiling(dougScoreCount / (double)PageSizeLimit))
         };
     }
     
