@@ -1,13 +1,13 @@
 <template>
-  <h1>Landing</h1>
+  <div>
+    <div class="columns">
+      <div class="column box is-10 is-offset-1">
+        <Featured />
+      </div>
+    </div>
+  </div>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  setup() {
-    return {};
-  },
-});
+<script setup lang="ts">
+import Featured from "../components/Featured.vue";
 </script>
 <style lang="scss"></style>
