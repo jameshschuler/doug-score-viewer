@@ -1,27 +1,27 @@
 <template>
   <div class="p-3">
     <h1 class="is-size-3 mb-3">Featured</h1>
-    <div class="columns is-mobile card-list outer">
+    <div v-if="!loading" class="columns is-mobile card-list outer">
       <Card />
       <Card />
       <Card />
       <Card />
       <Card />
     </div>
-    <i class="fas fa-chevron-right"></i>
-    <div>{{ loading }}</div>
+    <LoadingIndicator v-if="loading" />
   </div>
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
 import Card from "./Card.vue";
+import LoadingIndicator from "./LoadingIndicator.vue";
 
-let loading = ref(true);
+const loading = ref(true);
 
 async function loadFeatured() {
   setTimeout(() => {
     loading.value = false;
-  }, 1000);
+  }, 3000);
 }
 
 loadFeatured();

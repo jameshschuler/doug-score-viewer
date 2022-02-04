@@ -1,12 +1,23 @@
 <template>
   <nav class="navbar has-background-primary" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item has-text-white">
+      <span class="navbar-item has-text-white is-clickable" @click="toggleSearchDrawer()">
         <i class="fas fa-lg fa-fw fa-search"></i>
-      </a>
+      </span>
       <router-link to="/" class="navbar-item is-size-3 has-text-white">DougScore Viewer</router-link>
     </div>
   </nav>
+  <SearchDrawer v-show="showingSearchDrawer" />
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from "vue";
+import SearchDrawer from "./SearchDrawer.vue";
+
+const showingSearchDrawer = ref(false);
+
+function toggleSearchDrawer() {
+  console.log("toggleSearchDrawer");
+  showingSearchDrawer.value = !showingSearchDrawer.value;
+}
+</script>
 <style lang="scss"></style>

@@ -9,10 +9,43 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
 
-export default defineComponent({});
+const data = ref({
+  filmingLocation: {
+    city: "Los Angeles",
+    state: "California",
+  },
+  vehicle: {
+    make: "Honda",
+    model: "S2000 2Fast 2Furious",
+    originCountry: "Japan",
+    year: "2004",
+    id: 982,
+  },
+  dailyScore: {
+    comfort: 4,
+    features: 3,
+    practicality: 1,
+    quality: 4,
+    value: 6,
+    total: 18,
+    id: 977,
+  },
+  weekendScore: {
+    acceleration: 1,
+    coolFactor: 8,
+    funFactor: 6,
+    handling: 7,
+    styling: 6,
+    total: 28,
+    id: 977,
+  },
+  videoLink: "https://www.youtube.com/watch?v=4LAGNeE5pjA",
+  totalDougScore: 46,
+  id: 446,
+});
 </script>
 <style lang="scss">
 .card {
