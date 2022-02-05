@@ -7,7 +7,7 @@
       <router-link to="/" class="navbar-item is-size-3 has-text-white">DougScore Viewer</router-link>
     </div>
   </nav>
-  <SearchDrawer v-show="showingSearchDrawer" />
+  <SearchDrawer :class="{ 'slideout-open': showingSearchDrawer }" :toggle-search-drawer="toggleSearchDrawer" />
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
@@ -16,7 +16,6 @@ import SearchDrawer from "./SearchDrawer.vue";
 const showingSearchDrawer = ref(false);
 
 function toggleSearchDrawer() {
-  console.log("toggleSearchDrawer");
   showingSearchDrawer.value = !showingSearchDrawer.value;
 }
 </script>
