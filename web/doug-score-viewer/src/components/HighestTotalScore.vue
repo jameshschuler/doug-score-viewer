@@ -1,6 +1,6 @@
 <template>
   <div class="p-3">
-    <h1 class="is-size-3 mb-3">Featured</h1>
+    <h1 class="is-size-3 mb-3">Highest DougScores</h1>
     <div v-if="!loading" class="columns is-mobile card-list outer">
       <Card />
       <Card />
@@ -18,12 +18,12 @@ import LoadingIndicator from "./LoadingIndicator.vue";
 
 const loading = ref(true);
 
-async function loadFeatured() {
+async function loadHighestDougScores() {
   setTimeout(() => {
     loading.value = false;
-  }, 3000);
+  }, 1000);
 }
 
-loadFeatured();
+loadHighestDougScores();
 </script>
 <style lang="scss"></style>
