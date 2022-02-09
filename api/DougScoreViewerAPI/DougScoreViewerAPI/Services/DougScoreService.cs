@@ -12,6 +12,7 @@ namespace DougScoreViewerAPI.Services;
 public interface IDougScoreService
 {
     ServiceResponse<GetDougScoreResponse>  GetDougScore(int dougScoreId);
+    Task<ServiceResponse<GetDougScoresResponse>> GetFeatured();
     ServiceResponse<SearchDougScoreResponse>  SearchDougScores(SearchDougScoresRequest request);
     Task<ServiceResponse<SyncDougScoresResponse>> SyncDougScores();
 }
@@ -60,6 +61,36 @@ public class DougScoreService : IDougScoreService
         return new ServiceResponse<GetDougScoreResponse>()
         {
             Data = new GetDougScoreResponse(dougScoreResponse)
+        };
+    }
+    
+    public async Task<ServiceResponse<GetDougScoresResponse>> GetFeatured()
+    {
+        // TODO: don't hardcode these values
+        var randomIds = GetRandomNumbersBetweenRange(20, 522);
+        
+        var featuredQuery = _context.DougScores!
+            .Include(e => e.Vehicle)
+            .Include(e => e.DailyScore)
+            .Include(e => e.WeekendScore)
+            .Where(e => randomIds.Contains(e.Id))
+            .Take(5);
+        
+        var featuredDougScores = await featuredQuery
+            .Select(e => new DougScoreResponse(
+                new FilmingLocation(e!.City, e.State),
+                e.Vehicle,
+                e.DailyScore,
+                e.WeekendScore,
+                e.VideoLink,
+                e.TotalDougScore)
+                {
+                    Id = e.Id
+                }).ToListAsync();
+        
+        return new ServiceResponse<GetDougScoresResponse>
+        {
+            Data = new GetDougScoresResponse(featuredDougScores)
         };
     }
     
@@ -160,6 +191,19 @@ public class DougScoreService : IDougScoreService
         {
             Data = new SyncDougScoresResponse(dougScores.Count)
         };
+    }
+
+    private static int[] GetRandomNumbersBetweenRange(int min, int max, int times = 5)
+    {
+        var result = new int[times];
+        var random = new Random();
+
+        for (var i = 0; i < times; i++)
+        {
+            result[i] = random.Next(min, max);
+        }
+
+        return result;
     }
 
     private static string GetVideoLink(IXLCell? videoLinkCell)

@@ -24,6 +24,13 @@ public class DougScoreController : BaseController<DougScoreController>
         var response = _dougScoreService.SearchDougScores(request);
         return HandleResponse(response);
     }
+    
+    [HttpGet("featured")]
+    public async Task<ActionResult<ApiResponse<GetDougScoresResponse>>> Featured()
+    { 
+        var response = await _dougScoreService.GetFeatured();
+        return HandleResponse(response);
+    }
 
     [HttpGet("{dougScoreId:int:min(1)}")]
     public ActionResult<ApiResponse<GetDougScoreResponse>> Get([Required]int dougScoreId)
