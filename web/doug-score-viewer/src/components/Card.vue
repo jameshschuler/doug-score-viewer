@@ -7,31 +7,33 @@
             <div class="is-flex is-justify-content-space-between is-align-items-center">
               <div>
                 <figure class="image is-32x32">
-                  <img :src="getFlagIcon('')" :alt="data.vehicle.originCountry" />
+                  <img :src="getFlagIcon(dougScore.vehicle.originCountry)" :alt="dougScore.vehicle.originCountry" />
                 </figure>
               </div>
               <div class="is-flex is-align-items-center">
                 <span class="mr-1 is-clickable">
                   <i class="fas fa-lg fa-fw fa-map-marker-alt"></i>
                 </span>
-                <a class="icon is-red" :href="data.videoLink" target="_blank">
+                <a class="icon is-red" :href="dougScore.videoLink" target="_blank">
                   <i class="fab fa-lg fa-fw fa-youtube"></i>
                 </a>
               </div>
             </div>
             <div class="is-flex">
-              <div class="is-size-5">{{ data.vehicle.year }} {{ data.vehicle.make }} {{ data.vehicle.model }}</div>
+              <div class="is-size-5">{{ dougScore.vehicle.year }} {{ dougScore.vehicle.make }} {{ dougScore.vehicle.model }}</div>
             </div>
           </div>
           <div class="middle my-3">
             <div class="is-flex is-justify-content-center">
-              <h1 class="title total-doug-score p-2 has-border-great">{{ data.totalDougScore }}</h1>
+              <h1 class="title total-doug-score p-2 has-border-great" :class="getDougScoreBracket(dougScore.totalDougScore)">
+                {{ dougScore.totalDougScore }}
+              </h1>
             </div>
           </div>
           <div class="bottom">
             <div class="is-flex">
-              <button class="button mr-2">{{ data.dailyScore.total }}</button>
-              <button class="button">{{ data.weekendScore.total }}</button>
+              <button class="button mr-2">{{ dougScore.dailyScore.total }}</button>
+              <button class="button">{{ dougScore.weekendScore.total }}</button>
             </div>
           </div>
         </div>
@@ -41,47 +43,9 @@
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
-
-const assets = ["usa", "italy", "germany", "japan"];
-
-function getFlagIcon(originCountry: string): string {
-  const randoIndex = Math.floor(Math.random() * assets.length);
-  return `src/assets/${assets[randoIndex]}.png`;
-}
-
-const data = ref({
-  filmingLocation: {
-    city: "Los Angeles",
-    state: "California",
-  },
-  vehicle: {
-    make: "Honda",
-    model: "S2000",
-    originCountry: "Japan",
-    year: "2004",
-    id: 982,
-  },
-  dailyScore: {
-    comfort: 4,
-    features: 3,
-    practicality: 1,
-    quality: 4,
-    value: 6,
-    total: 18,
-    id: 977,
-  },
-  weekendScore: {
-    acceleration: 1,
-    coolFactor: 8,
-    funFactor: 6,
-    handling: 7,
-    styling: 6,
-    total: 28,
-    id: 977,
-  },
-  videoLink: "https://www.youtube.com/watch?v=4LAGNeE5pjA",
-  totalDougScore: 46,
-  id: 446,
+import { getFlagIcon, getDougScoreBracket } from "../utils";
+const { dougScore } = defineProps({
+  dougScore: Object,
 });
 </script>
 <style lang="scss">

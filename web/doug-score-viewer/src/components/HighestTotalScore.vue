@@ -2,11 +2,11 @@
   <div class="p-3">
     <h1 class="is-size-3 mb-3">Highest DougScores</h1>
     <div v-if="!loading" class="columns is-mobile card-list outer">
+      <!-- <Card />
       <Card />
       <Card />
       <Card />
-      <Card />
-      <Card />
+      <Card /> -->
     </div>
     <LoadingIndicator v-if="loading" />
   </div>
