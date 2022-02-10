@@ -16,7 +16,7 @@ public record Vehicle : BaseEntity
     public string? OriginCountry { get; init; }
     
     [Column("year")]
-    public string? Year { get; init; }
+    public int Year { get; init; }
     
     [JsonIgnore]
     public virtual DougScore? DougScore { get; init; }

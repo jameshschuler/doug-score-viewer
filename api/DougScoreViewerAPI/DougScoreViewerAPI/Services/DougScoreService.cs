@@ -23,9 +23,7 @@ public class DougScoreService : IDougScoreService
     private readonly IMapper _mapper;
     private readonly MyContext _context;
     private readonly ILogger<DougScoreService> _logger;
-
-    private const int PageSizeLimit = 5;
-
+    
     public DougScoreService(IWebHostEnvironment environment, IMapper mapper, MyContext context, ILogger<DougScoreService> logger)
     {
         _environment = environment;
@@ -47,6 +45,7 @@ public class DougScoreService : IDougScoreService
             throw new KeyNotFoundException("Unable to find matching DougScore");
         }
 
+        // TODO: move repeated logic to method
         var dougScoreResponse = new DougScoreResponse(
             new FilmingLocation(dougScore!.City, dougScore.State),
             dougScore.Vehicle,
@@ -106,7 +105,7 @@ public class DougScoreService : IDougScoreService
         dougScoresQuery = OrderDougScores(request, dougScoresQuery);
 
         var dougScoreCount = dougScoresQuery.Count();
-        dougScoresQuery = dougScoresQuery.Skip((request.Page - 1) * PageSizeLimit).Take(PageSizeLimit);
+        dougScoresQuery = dougScoresQuery.Skip((request.Page - 1) * request.PageSize).Take(request.PageSize);
             
         var dougScores = dougScoresQuery.ToList().Select(e => 
             new DougScoreResponse(
@@ -127,7 +126,7 @@ public class DougScoreService : IDougScoreService
                 dougScores.Count(),
                 dougScoreCount, 
                 request.Page, 
-                (int)Math.Ceiling(dougScoreCount / (double)PageSizeLimit))
+                (int)Math.Ceiling(dougScoreCount / (double)request.PageSize))
         };
     }
     
@@ -157,7 +156,7 @@ public class DougScoreService : IDougScoreService
             {
                 Make = row.Cell(2).GetString().Trim(),
                 Model = row.Cell(3).GetString().Trim(),
-                Year = row.Cell(1).GetString(),
+                Year = int.Parse(row.Cell(1).GetString()),
                 OriginCountry = row.Cell(20).GetString()
             },
             DailyScore = new DailyScore()
@@ -247,9 +246,12 @@ public class DougScoreService : IDougScoreService
             dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Model == request.Model);
         }
         
-        if (!string.IsNullOrWhiteSpace(request.Year))
+        if (request.StartYear.HasValue)
         {
-            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Year == request.Year);
+            var endYear = request.EndYear ?? DateTime.Now.Year;
+            
+            dougScoresQuery = dougScoresQuery
+                .Where(e => e.Vehicle!.Year >= request.StartYear && e.Vehicle!.Year <= endYear );
         }
         
         if (!string.IsNullOrWhiteSpace(request.OriginCountry))
