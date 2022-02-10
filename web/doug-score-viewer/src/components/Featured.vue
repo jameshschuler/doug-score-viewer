@@ -5,8 +5,13 @@
       <Card v-for="dougScore in featuredDougScores" :doug-score="dougScore" />
     </div>
     <div v-if="!loading && appError">
-      <Notification :dismissible="false" :message="appError.message" />
+      <Notification :dismissible="false" :message="appError.message" :notificationType="NotificationType.Error" />
     </div>
+    <Notification
+      v-if="!loading && !appError && featuredDougScores.length === 0"
+      message="No DougScores were found."
+      :notificationType="NotificationType.Info"
+    />
     <LoadingIndicator v-if="loading" />
   </div>
 </template>

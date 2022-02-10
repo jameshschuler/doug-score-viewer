@@ -1,13 +1,17 @@
 <template>
   <div class="p-3">
     <h1 class="is-size-3 mb-3">Highest DougScores</h1>
-    <div v-if="!loading" class="columns is-mobile card-list outer">
-      <!-- <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card /> -->
+    <div v-if="!loading && !appError" class="columns is-mobile card-list outer">
+      <Card v-for="dougScore in dougScores" :doug-score="dougScore" />
     </div>
+    <div v-if="!loading && appError">
+      <Notification :dismissible="false" :message="appError.message" :notificationType="NotificationType.Error" />
+    </div>
+    <Notification
+      v-if="!loading && !appError && dougScores.length === 0"
+      message="No DougScores were found."
+      :notificationType="NotificationType.Info"
+    />
     <LoadingIndicator v-if="loading" />
   </div>
 </template>
@@ -15,13 +19,27 @@
 import { ref } from "vue";
 import Card from "./Card.vue";
 import LoadingIndicator from "./LoadingIndicator.vue";
+import Notification from "../components/Notification.vue";
+import { AppError } from "../models/common";
+import { DougScoreResponse } from "../models/dougScore";
+import { getHighestDougScores } from "../services/dougScoreService";
+import { NotificationType } from "../models/enums/notification";
 
+const appError = ref<AppError>();
 const loading = ref(true);
+const dougScores = ref<DougScoreResponse[]>([]);
 
 async function loadHighestDougScores() {
-  setTimeout(() => {
-    loading.value = false;
-  }, 1000);
+  loading.value = true;
+
+  const { data, error } = await getHighestDougScores();
+
+  if (!error) {
+    dougScores.value = data!.dougScores;
+  } else {
+    appError.value = error;
+  }
+  loading.value = false;
 }
 
 loadHighestDougScores();
