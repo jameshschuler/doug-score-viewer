@@ -32,7 +32,10 @@
           </div>
           <div class="bottom">
             <div class="is-flex">
-              <button class="button mr-2">{{ dougScore.dailyScore.total }}</button>
+              <!-- TODO: fix hover styles -->
+              <button class="button mr-2" :class="getDailyScoreBracket(dougScore.dailyScore.total)">
+                {{ dougScore.dailyScore.total }}
+              </button>
               <button class="button">{{ dougScore.weekendScore.total }}</button>
             </div>
           </div>
@@ -43,7 +46,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
-import { getFlagIcon, getDougScoreBracket } from "../utils";
+import { getFlagIcon, getDougScoreBracket, getDailyScoreBracket } from "../utils";
 const { dougScore } = defineProps({
   dougScore: Object,
 });

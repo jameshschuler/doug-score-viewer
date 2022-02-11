@@ -7,20 +7,33 @@
       </span>
       <span class="is-size-5 has-text-weight-semibold" :class="notificationTheme">{{ notificationTitle }}</span>
     </div>
-    <p class="block has-text-weight-semibold">{{ message }}</p>
+    <p class="block has-text-weight-semibold">{{ appError.message }}</p>
   </div>
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
+import { AppError } from "../models/common";
+import { AppErrorType } from "../models/enums/error";
 import { NotificationType } from "../models/enums/notification";
-const { dismissible, message, notificationType } = defineProps({
-  message: String,
+const { appError, dismissible } = defineProps({
+  appError: Object,
   dismissible: Boolean,
-  notificationType: Number,
 });
 
-const notificationTheme = ref<string>(getNotificationTheme(notificationType as NotificationType));
-const notificationTitle = ref<string>(NotificationType[notificationType as NotificationType]);
+const notificationType = ref<NotificationType>(getNotificationType(appError as AppError));
+const notificationTheme = ref<string>(getNotificationTheme(notificationType.value));
+const notificationTitle = ref<string>(NotificationType[notificationType.value]);
+
+function getNotificationType(appError: AppError): NotificationType {
+  switch (appError.errorType) {
+    case AppErrorType.NotFound:
+      return NotificationType.Info;
+    case AppErrorType.BadRequest:
+      return NotificationType.Error;
+    default:
+      return NotificationType.Info;
+  }
+}
 
 function getNotificationIcon(notificationType: NotificationType): string {
   switch (notificationType) {

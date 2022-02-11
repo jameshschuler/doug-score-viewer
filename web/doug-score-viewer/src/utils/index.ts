@@ -13,9 +13,14 @@ export function getDougScoreBracket ( dougScore: number ): string {
     }
 }
 
-// TODO:
 export function getDailyScoreBracket ( dailyScore: number ): string {
-    return '';
+    if ( dailyScore >= 30 ) {
+        return 'has-border-glad';
+    } else if ( dailyScore >= 20 ) {
+        return 'has-border-okay';
+    } else {
+        return 'has-border-sad';
+    }
 }
 
 // TODO:
