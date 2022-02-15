@@ -24,23 +24,38 @@ async function checkAPIHealth() {
 
 <style lang="scss">
 .is-red {
-  color: #ff0000;
+  color: hsl(0, 100%, 50%);
 
   &:hover {
-    color: #ff0000;
+    color: hsl(0, 100%, 50%);
   }
 }
 
 .has-border-great {
-  border-color: hsl(141, 71%, 48%);
+  border-color: hsl(141, 71%, 48%) !important;
+
+  &:hover {
+    background-color: hsl(141, 71%, 48%) !important;
+    color: hsl(0, 0%, 100%);
+  }
 }
 
 .has-border-okay {
-  border-color: hsl(48, 100%, 67%);
+  border-color: hsl(48, 100%, 67%) !important;
+
+  &:hover {
+    background-color: hsl(48, 100%, 67%) !important;
+    color: hsl(0, 0%, 100%);
+  }
 }
 
 .has-border-sad {
-  border-color: hsl(348, 100%, 61%);
+  border-color: hsl(348, 100%, 61%) !important;
+
+  &:hover {
+    background-color: hsl(348, 100%, 61%) !important;
+    color: hsl(0, 0%, 100%);
+  }
 }
 
 body {

@@ -1,8 +1,8 @@
 <template>
   <div class="p-3">
-    <h1 class="is-size-3 mb-3">Highest DougScores</h1>
+    <h1 class="is-size-3 mb-3">{{ props.title }}</h1>
     <div v-if="!loading && !appError" class="columns is-mobile card-list outer">
-      <Card v-for="dougScore in dougScores" :doug-score="dougScore" />
+      <Card v-for="dougScore in dougScores" :doug-score="dougScore" :key="dougScore.id" />
     </div>
     <div v-if="!loading && appError">
       <Notification :dismissible="false" :appError="appError" />
@@ -14,20 +14,25 @@
 import { ref } from "vue";
 import Card from "./Card.vue";
 import LoadingIndicator from "./LoadingIndicator.vue";
-import Notification from "../components/Notification.vue";
+import Notification from "./Notification.vue";
 import { AppError } from "../models/common";
 import { DougScoreResponse } from "../models/dougScore";
-import { getHighestDougScores } from "../services/dougScoreService";
+import { getDougScores } from "../services/dougScoreService";
 import { NotificationType } from "../models/enums/notification";
+
+const props = defineProps({
+  sortBy: String,
+  title: String,
+});
 
 const appError = ref<AppError>();
 const loading = ref(true);
 const dougScores = ref<DougScoreResponse[]>([]);
 
-async function loadHighestDougScores() {
+async function loadDougScores() {
   loading.value = true;
 
-  const { data, error } = await getHighestDougScores();
+  const { data, error } = await getDougScores(props.sortBy!);
 
   if (!error) {
     dougScores.value = data!.dougScores;
@@ -37,6 +42,6 @@ async function loadHighestDougScores() {
   loading.value = false;
 }
 
-loadHighestDougScores();
+loadDougScores();
 </script>
 <style lang="scss"></style>

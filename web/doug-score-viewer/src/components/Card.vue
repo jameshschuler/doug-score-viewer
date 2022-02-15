@@ -7,36 +7,33 @@
             <div class="is-flex is-justify-content-space-between is-align-items-center">
               <div>
                 <figure class="image is-32x32">
-                  <img :src="getFlagIcon(dougScore.vehicle.originCountry)" :alt="dougScore.vehicle.originCountry" />
+                  <img :src="getFlagIcon(dougScore!.vehicle.originCountry)" :alt="dougScore!.vehicle.originCountry" />
                 </figure>
               </div>
               <div class="is-flex is-align-items-center">
                 <span class="mr-1 is-clickable">
                   <i class="fas fa-lg fa-fw fa-map-marker-alt"></i>
                 </span>
-                <a class="icon is-red" :href="dougScore.videoLink" target="_blank">
+                <a class="icon is-red" :href="dougScore!.videoLink" target="_blank">
                   <i class="fab fa-lg fa-fw fa-youtube"></i>
                 </a>
               </div>
             </div>
             <div class="is-flex">
-              <div class="is-size-5">{{ dougScore.vehicle.year }} {{ dougScore.vehicle.make }} {{ dougScore.vehicle.model }}</div>
+              <div class="is-size-5">{{ dougScore!.vehicle.year }} {{ dougScore!.vehicle.make }} {{ dougScore!.vehicle.model }}</div>
             </div>
           </div>
           <div class="middle my-3">
             <div class="is-flex is-justify-content-center">
-              <h1 class="title total-doug-score p-2 has-border-great" :class="getDougScoreBracket(dougScore.totalDougScore)">
-                {{ dougScore.totalDougScore }}
+              <h1 class="title total-doug-score py-2 px-3" :class="totalDougScoreBorder">
+                {{ dougScore!.totalDougScore }}
               </h1>
             </div>
           </div>
           <div class="bottom">
             <div class="is-flex">
-              <!-- TODO: fix hover styles -->
-              <button class="button mr-2" :class="getDailyScoreBracket(dougScore.dailyScore.total)">
-                {{ dougScore.dailyScore.total }}
-              </button>
-              <button class="button">{{ dougScore.weekendScore.total }}</button>
+              <button class="button mr-2" :class="dailyScoreBorder">D: {{ dougScore!.dailyScore.total }}</button>
+              <button class="button" :class="weekendScoreBorder">W: {{ dougScore!.weekendScore.total }}</button>
             </div>
           </div>
         </div>
@@ -45,11 +42,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
-import { getFlagIcon, getDougScoreBracket, getDailyScoreBracket } from "../utils";
+import { ref, computed } from "vue";
+import { getFlagIcon, getDougScoreBracket, getDailyScoreBracket, getWeekendScoreBracket } from "../utils";
 const { dougScore } = defineProps({
   dougScore: Object,
 });
+
+const totalDougScoreBorder = computed(() => getDougScoreBracket(dougScore!.totalDougScore));
+const dailyScoreBorder = computed(() => getDailyScoreBracket(dougScore!.dailyScore.total));
+const weekendScoreBorder = computed(() => getWeekendScoreBracket(dougScore!.weekendScore.total));
 </script>
 <style lang="scss">
 .card {
@@ -58,6 +59,7 @@ const { dougScore } = defineProps({
   .total-doug-score {
     border-style: solid;
     border-width: 2px;
+    border-radius: 4px;
   }
 }
 

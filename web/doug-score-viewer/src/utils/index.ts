@@ -5,7 +5,7 @@ export function getFlagIcon ( originCountry: string ): string {
 
 export function getDougScoreBracket ( dougScore: number ): string {
     if ( dougScore >= 65 ) {
-        return 'has-border-glad';
+        return 'has-border-great';
     } else if ( dougScore > 50 ) {
         return 'has-border-okay';
     } else {
@@ -14,13 +14,16 @@ export function getDougScoreBracket ( dougScore: number ): string {
 }
 
 export function getDailyScoreBracket ( dailyScore: number ): string {
+    let result;
     if ( dailyScore >= 30 ) {
-        return 'has-border-glad';
+        result = 'has-border-great';
     } else if ( dailyScore >= 20 ) {
-        return 'has-border-okay';
+        result = 'has-border-okay';
     } else {
-        return 'has-border-sad';
+        result = 'has-border-sad';
     }
+
+    return result;
 }
 
 // TODO:

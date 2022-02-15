@@ -1,8 +1,8 @@
 <template>
   <div class="p-3">
-    <h1 class="is-size-3 mb-3">Featured</h1>
+    <h1 class="is-size-3 mb-3">Featured DougScores</h1>
     <div v-if="!loading && !appError" class="columns is-mobile card-list outer">
-      <Card v-for="dougScore in featuredDougScores" :doug-score="dougScore" />
+      <Card v-for="dougScore in featuredDougScores" :key="dougScore.id" :doug-score="dougScore" />
     </div>
     <div v-if="!loading && appError">
       <Notification :dismissible="false" :appError="appError" />

@@ -1,15 +1,19 @@
 import { APIResponse } from '../models/common';
 import { AppErrorType } from '../models/enums/error';
 import { FeaturedDougScoresResponse, SearchDougScoresResponse } from '../models/response';
+import { cacheResponse } from '../utils/cache';
 
 // TODO: implement caching for this response
 export async function getFeaturedDougScores (): Promise<APIResponse<FeaturedDougScoresResponse>> {
     try {
         const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/featured`;
         const response = await fetch( url );
-        const data = ( await response.json() ) as APIResponse<FeaturedDougScoresResponse>;
 
-        if ( data.data?.dougScores.length === 0 ) {
+        await cacheResponse( 'getFeaturedDougScores', url, response );
+
+        const responseData = ( await response.json() ) as APIResponse<FeaturedDougScoresResponse>;
+
+        if ( responseData.data?.dougScores.length === 0 ) {
             return {
                 error: {
                     errorType: AppErrorType.NotFound,
@@ -18,7 +22,7 @@ export async function getFeaturedDougScores (): Promise<APIResponse<FeaturedDoug
             }
         }
 
-        return { data: data.data };
+        return { data: responseData.data };
     } catch ( err ) {
         return {
             error: {
@@ -30,13 +34,13 @@ export async function getFeaturedDougScores (): Promise<APIResponse<FeaturedDoug
 }
 
 // TODO: implement caching for this response
-export async function getHighestDougScores (): Promise<APIResponse<SearchDougScoresResponse>> {
+export async function getDougScores ( sortBy: string ): Promise<APIResponse<SearchDougScoresResponse>> {
     try {
-        const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/search?sortBy=TotalDougScore`;
+        const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/search?sortBy=${sortBy}`;
         const response = await fetch( url );
-        const data = ( await response.json() ) as APIResponse<SearchDougScoresResponse>;
+        const responseData = ( await response.json() ) as APIResponse<SearchDougScoresResponse>;
 
-        if ( data.data?.dougScores.length === 0 ) {
+        if ( responseData.data?.dougScores.length === 0 ) {
             return {
                 error: {
                     errorType: AppErrorType.NotFound,
@@ -45,7 +49,7 @@ export async function getHighestDougScores (): Promise<APIResponse<SearchDougSco
             }
         }
 
-        return { data: data.data };
+        return { data: responseData.data };
     } catch ( err ) {
         return {
             error: {
