@@ -43,14 +43,14 @@
 </template>
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { getFlagIcon, getDougScoreBracket, getDailyScoreBracket, getWeekendScoreBracket } from "../utils";
+import { getFlagIcon, getDougScoreBracket, getScoreBracket } from "../utils";
 const { dougScore } = defineProps({
   dougScore: Object,
 });
 
 const totalDougScoreBorder = computed(() => getDougScoreBracket(dougScore!.totalDougScore));
-const dailyScoreBorder = computed(() => getDailyScoreBracket(dougScore!.dailyScore.total));
-const weekendScoreBorder = computed(() => getWeekendScoreBracket(dougScore!.weekendScore.total));
+const dailyScoreBorder = computed(() => getScoreBracket(dougScore!.dailyScore.total));
+const weekendScoreBorder = computed(() => getScoreBracket(dougScore!.weekendScore.total));
 </script>
 <style lang="scss">
 .card {

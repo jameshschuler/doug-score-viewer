@@ -1,17 +1,19 @@
 import { APIResponse } from '../models/common';
 import { AppErrorType } from '../models/enums/error';
 import { FeaturedDougScoresResponse, SearchDougScoresResponse } from '../models/response';
-import { cacheResponse } from '../utils/cache';
+import { cacheResponse, getCachedResponse } from '../utils/cache';
 
-// TODO: implement caching for this response
 export async function getFeaturedDougScores (): Promise<APIResponse<FeaturedDougScoresResponse>> {
     try {
         const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/featured`;
-        const response = await fetch( url );
 
-        await cacheResponse( 'getFeaturedDougScores', url, response );
+        let responseData = await getCachedResponse( 'getFeaturedDougScores', url );
+        if ( responseData === null ) {
+            const response = await fetch( url );
+            await cacheResponse( 'getFeaturedDougScores', url, response );
 
-        const responseData = ( await response.json() ) as APIResponse<FeaturedDougScoresResponse>;
+            responseData = ( await response.json() ) as APIResponse<FeaturedDougScoresResponse>;
+        }
 
         if ( responseData.data?.dougScores.length === 0 ) {
             return {

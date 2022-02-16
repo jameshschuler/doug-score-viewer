@@ -1,21 +1,58 @@
-// TODO: Call this method before fetch() actually runs? 
-// TODO: Add service worker
+import { APIResponse } from '../models/common';
+import { FeaturedDougScoresResponse } from '../models/response';
 
-export async function cacheResponse ( cacheName: string, url: string, response: Response ) {
-    let isCacheSupported = 'caches' in window;
-    if ( !isCacheSupported ) {
-        console.error( 'Darn! Caches not available' );
-        return;
-    }
+export async function cacheResponse ( cacheName: string, url: string, response: Response ): Promise<void> {
+    if ( !isCacheSupported ) return;
+
     const cache = await caches.open( cacheName );
 
-    // TODO: we also want to automatically update the cache periodically 
+    await cache.put( url, response.clone() );
+
+    const expiry = getExpiryDate();
+    localStorage.setItem( cacheName, expiry );
+}
+
+export async function getCachedResponse ( cacheName: string, url: string ): Promise<APIResponse<FeaturedDougScoresResponse> | null> {
+    if ( !isCacheSupported ) return null;
+
+    const cache = await caches.open( cacheName );
     const cachedResponse = await cache.match( url );
-    if ( cachedResponse ) {
-        console.log( 'Found a cache to return!' )
+
+    if ( cachedResponse && !isCacheExpired( cacheName ) ) {
         return await cachedResponse.json();
-    } else {
-        await cache.put( url, response.clone() );
-        console.log( 'Request was cached?' );
     }
+
+    return null;
+}
+
+function getExpiryDate (): string {
+    const expiry = new Date();
+    const currentHour = expiry.getHours();
+
+    if ( currentHour >= 4 ) {
+        expiry.setDate( expiry.getDate() + 1 );
+        expiry.setHours( 4, 0, 0 );
+    } else {
+        expiry.setHours( 4, 0, 0 );
+    }
+
+    return expiry.toLocaleString();
+}
+
+function isCacheSupported () {
+    return 'caches' in window;
+}
+
+function isCacheExpired ( key: string ): boolean {
+    const item = localStorage.getItem( key );
+
+    if ( !item ) {
+        return true;
+    }
+
+    if ( new Date() > new Date( item ) ) {
+        return true;
+    }
+
+    return false;
 }

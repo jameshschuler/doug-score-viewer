@@ -13,20 +13,15 @@ export function getDougScoreBracket ( dougScore: number ): string {
     }
 }
 
-export function getDailyScoreBracket ( dailyScore: number ): string {
+export function getScoreBracket ( score: number ): string {
     let result;
-    if ( dailyScore >= 30 ) {
+    if ( score >= 30 ) {
         result = 'has-border-great';
-    } else if ( dailyScore >= 20 ) {
+    } else if ( score >= 20 ) {
         result = 'has-border-okay';
     } else {
         result = 'has-border-sad';
     }
 
     return result;
-}
-
-// TODO:
-export function getWeekendScoreBracket ( weekendScore: number ): string {
-    return '';
 }
