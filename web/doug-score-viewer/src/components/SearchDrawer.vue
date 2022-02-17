@@ -11,9 +11,11 @@
   </div>
 </template>
 <script setup lang="ts">
+import { PropType } from "vue";
+
 const props = defineProps({
   toggleSearchDrawer: {
-    type: Function,
+    type: Function as PropType<(payload: MouseEvent) => void>,
     required: true,
   },
 });

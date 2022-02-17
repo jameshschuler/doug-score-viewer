@@ -7,7 +7,7 @@
       </span>
       <span class="is-size-5 has-text-weight-semibold" :class="notificationTheme">{{ notificationTitle }}</span>
     </div>
-    <p class="block has-text-weight-semibold">{{ appError.message }}</p>
+    <p class="block has-text-weight-semibold">{{ appError!.message }}</p>
   </div>
 </template>
 <script setup lang="ts">
