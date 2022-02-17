@@ -1,25 +1,34 @@
 <script setup lang="ts">
 import Navbar from "./components/Navbar.vue";
 import Footer from "./components/Footer.vue";
+import { ref } from "vue";
+import LoadingOverlay from "./components/LoadingOverlay.vue";
 
-checkAPIHealth();
+const loading = ref<boolean>(true);
 
 async function checkAPIHealth() {
   const healthCheckUrl = `${import.meta.env.VITE_API_BASE_URL}/health`;
   const response = await fetch(healthCheckUrl);
   const data = await response.text();
   console.info(`API responded with...${data}`);
+  loading.value = false;
 }
+
+checkAPIHealth();
 </script>
 
 <template>
-  <Navbar />
-  <main class="container is-fluid my-6">
-    <div class="columns">
-      <router-view class="column is-12-touch"></router-view>
-    </div>
-  </main>
-  <Footer />
+  <div v-if="!loading">
+    <Navbar />
+    <main class="container is-fluid my-6">
+      <div class="columns">
+        <router-view class="column is-12-touch"></router-view>
+      </div>
+    </main>
+    <Footer />
+  </div>
+
+  <LoadingOverlay v-if="loading" />
 </template>
 
 <style lang="scss">
