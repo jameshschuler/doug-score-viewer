@@ -8,6 +8,7 @@ public class MyContext: DbContext
     public DbSet<DougScore>? DougScores { get; init; }
     public DbSet<Vehicle>? Vehicles { get; init; }
     public DbSet<WeekendScore>? WeekendScores { get; init; }
+    public DbSet<FeaturedDougScore>? FeaturedDougScores { get; init; }
 
     public MyContext(DbContextOptions<MyContext> options) : base(options)
     {
@@ -32,5 +33,10 @@ public class MyContext: DbContext
             .HasOne(e => e.Vehicle)
             .WithOne(e => e.DougScore)
             .HasForeignKey<DougScore>(e => e.VehicleId);
+
+        modelBuilder.Entity<FeaturedDougScore>()
+            .HasOne(e => e.DougScore)
+            .WithMany(e => e.FeaturedDougScores)
+            .HasForeignKey(e => e.DougScoreId);
     }
 }

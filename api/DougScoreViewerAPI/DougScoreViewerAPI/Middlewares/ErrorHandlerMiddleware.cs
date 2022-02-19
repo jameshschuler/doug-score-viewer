@@ -8,11 +8,13 @@ public class ErrorHandlerMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IWebHostEnvironment _env;
+    private readonly ILogger<ErrorHandlerMiddleware> _logger;
 
-    public ErrorHandlerMiddleware(IWebHostEnvironment env, RequestDelegate next)
+    public ErrorHandlerMiddleware(IWebHostEnvironment env, RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger)
     {
         _env = env;
         _next = next;
+        _logger = logger;
     }
 
     public async Task Invoke(HttpContext context)
@@ -39,21 +41,14 @@ public class ErrorHandlerMiddleware
                     break;
             }
 
-            string result;
             if (_env.EnvironmentName == "Development")
             {
-                result = JsonSerializer.Serialize(new DeveloperErrorResponse(
-                    error.Message,
-                    error.StackTrace,
-                    error.Source,
-                    error.InnerException?.Message));
-            }
-            else
-            {
-                var message = response.StatusCode == (int)HttpStatusCode.InternalServerError ? "Oops! Something went wrong." : error?.Message;
-                result = JsonSerializer.Serialize(new { message = message });
+                _logger.LogError(error, "Error!");
             }
 
+            var message = response.StatusCode == (int)HttpStatusCode.InternalServerError ? "Oops! Something went wrong." : error?.Message;
+            var result = JsonSerializer.Serialize(new {  message, successful = false });
+            
             await response.WriteAsync(result);
         }
     }

@@ -39,6 +39,13 @@ public class DougScoreController : BaseController<DougScoreController>
         return HandleResponse(response);
     }
 
+    [HttpPost("setFeatured")]
+    public async Task<ActionResult<ApiResponse<SetFeaturedDougScoresResponse>>> SetFeaturedDougScores()
+    {
+        var response = await _dougScoreService.SetFeaturedDougScores();
+        return HandleResponse(response);
+    }
+
     [HttpPost("sync")]
     public async Task<ActionResult<ApiResponse<SyncDougScoresResponse>>> Sync()
     {

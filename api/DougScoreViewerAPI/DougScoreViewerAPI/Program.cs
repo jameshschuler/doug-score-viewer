@@ -11,6 +11,7 @@ var connectionString = builder.Environment.IsDevelopment() ? builder.Configurati
 // Add services to the container.
 builder.Services.AddDbContext<MyContext>(options =>
     options.UseNpgsql(connectionString));
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<MyContext>();

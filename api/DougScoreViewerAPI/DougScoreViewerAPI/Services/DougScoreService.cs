@@ -14,6 +14,8 @@ public interface IDougScoreService
     ServiceResponse<GetDougScoreResponse>  GetDougScore(int dougScoreId);
     Task<ServiceResponse<GetDougScoresResponse>> GetFeatured();
     ServiceResponse<SearchDougScoreResponse>  SearchDougScores(SearchDougScoresRequest request);
+
+    Task<ServiceResponse<SetFeaturedDougScoresResponse>> SetFeaturedDougScores();
     Task<ServiceResponse<SyncDougScoresResponse>> SyncDougScores();
 }
 
@@ -62,29 +64,25 @@ public class DougScoreService : IDougScoreService
             Data = new GetDougScoreResponse(dougScoreResponse)
         };
     }
-    
+
     public async Task<ServiceResponse<GetDougScoresResponse>> GetFeatured()
     {
-        // TODO: don't hardcode these values
-        var randomIds = GetRandomNumbersBetweenRange(20, 522);
-        
-        var featuredQuery = _context.DougScores!
-            .Include(e => e.Vehicle)
-            .Include(e => e.DailyScore)
-            .Include(e => e.WeekendScore)
-            .Where(e => randomIds.Contains(e.Id))
-            .Take(5);
-        
+        var featuredQuery = _context.FeaturedDougScores!
+            .Include(e => e.DougScore).ThenInclude(e => e!.Vehicle)
+            .Include(e => e.DougScore).ThenInclude(e => e!.DailyScore)
+            .Include(e => e.DougScore).ThenInclude(e => e!.WeekendScore)
+            .Where(e => DateTime.Compare(e.DateFeatured.Date, DateTime.Today) == 0);
+
         var featuredDougScores = await featuredQuery
             .Select(e => new DougScoreResponse(
-                new FilmingLocation(e!.City, e.State),
-                e.Vehicle,
-                e.DailyScore,
-                e.WeekendScore,
-                e.VideoLink,
-                e.TotalDougScore)
+                new FilmingLocation(e.DougScore!.City, e.DougScore.State),
+                e.DougScore.Vehicle,
+                e.DougScore.DailyScore,
+                e.DougScore.WeekendScore,
+                e.DougScore.VideoLink,
+                e.DougScore.TotalDougScore)
                 {
-                    Id = e.Id
+                    Id = e.DougScore.Id
                 }).ToListAsync();
         
         return new ServiceResponse<GetDougScoresResponse>
@@ -127,6 +125,39 @@ public class DougScoreService : IDougScoreService
                 dougScoreCount, 
                 request.Page, 
                 (int)Math.Ceiling(dougScoreCount / (double)request.PageSize))
+        };
+    }
+
+    public async Task<ServiceResponse<SetFeaturedDougScoresResponse>> SetFeaturedDougScores()
+    {
+        if (_context.FeaturedDougScores!.Any(e => DateTime.Compare(e.DateFeatured.Date, DateTime.Today) == 0))
+        {
+           throw new AppException($"Featured DougScores have already been set for {DateTime.Today.ToLongDateString()}");
+        }
+        
+        var minId = await _context.DougScores!.MinAsync(e => e.Id);
+        var maxId = await _context.DougScores!.MaxAsync(e => e.Id);
+        var randomIds = GetRandomNumbersBetweenRange(minId, maxId);
+
+        var dougScores = _context.DougScores!.Where(e => randomIds.Contains(e.Id));
+        if (!dougScores.Any())
+        {
+            throw new AppException();
+        }
+
+        var featuredDougScores = dougScores.Select(e => new FeaturedDougScore
+        {
+            DougScoreId = e.Id,
+            DateFeatured = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow
+        });
+        
+        await _context.FeaturedDougScores!.AddRangeAsync(featuredDougScores);
+        var createdCount = await _context.SaveChangesAsync();
+        
+        return new ServiceResponse<SetFeaturedDougScoresResponse>
+        {
+            Data = new SetFeaturedDougScoresResponse(createdCount == dougScores.Count())
         };
     }
     
@@ -199,7 +230,7 @@ public class DougScoreService : IDougScoreService
 
         for (var i = 0; i < times; i++)
         {
-            result[i] = random.Next(min, max);
+            result[i] = random.Next(min, max + 1);
         }
 
         return result;

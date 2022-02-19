@@ -42,4 +42,6 @@ public record DougScore : BaseEntity
     public virtual WeekendScore? WeekendScore { get; init; }
     
     public virtual Vehicle? Vehicle { get; init; }
+
+    public virtual ICollection<FeaturedDougScore> FeaturedDougScores { get; init; } = new List<FeaturedDougScore>();
 }
