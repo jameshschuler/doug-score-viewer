@@ -32,6 +32,11 @@ checkAPIHealth();
 </template>
 
 <style lang="scss">
+html,
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
 .is-red {
   color: hsl(0, 100%, 50%);
 

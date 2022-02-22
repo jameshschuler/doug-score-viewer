@@ -32,25 +32,55 @@
           </div>
           <div class="bottom">
             <div class="is-flex">
-              <button class="button mr-2" :class="dailyScoreBorder">D: {{ dougScore!.dailyScore.total }}</button>
-              <button class="button" :class="weekendScoreBorder">W: {{ dougScore!.weekendScore.total }}</button>
+              <button class="button mr-2" :class="dailyScoreBorder" @click="handleDailyScoreModal(dougScore!.dailyScore)">
+                D: {{ dougScore!.dailyScore.total }}
+              </button>
+              <button class="button" :class="weekendScoreBorder" @click="handleWeekendScoreModal(dougScore!.weekendScore)">
+                W: {{ dougScore!.weekendScore.total }}
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <Modal :is-active="isModalActive" :close-modal="closeModal" title="View DailyScore">
+    <DailyScoreTable v-if="selectedDailyScore" :score="selectedDailyScore"></DailyScoreTable>
+  </Modal>
 </template>
 <script setup lang="ts">
+import Modal from "./Modal.vue";
 import { ref, computed } from "vue";
+import { DailyScore, WeekendScore } from "../models/dougScore";
 import { getFlagIcon, getDougScoreBracket, getScoreBracket } from "../utils";
+import DailyScoreTable from "./DailyScoreTable.vue";
 const { dougScore } = defineProps({
   dougScore: Object,
 });
 
+const isModalActive = ref<boolean>(false);
+const selectedDailyScore = ref<DailyScore | undefined>();
+const selectedWeekendScore = ref<WeekendScore | undefined>();
+
 const totalDougScoreBorder = computed(() => getDougScoreBracket(dougScore!.totalDougScore));
 const dailyScoreBorder = computed(() => getScoreBracket(dougScore!.dailyScore.total));
 const weekendScoreBorder = computed(() => getScoreBracket(dougScore!.weekendScore.total));
+
+function handleDailyScoreModal(dailyScore: DailyScore) {
+  selectedDailyScore.value = dailyScore;
+  isModalActive.value = !isModalActive.value;
+}
+
+function handleWeekendScoreModal(weekendScore: WeekendScore) {
+  selectedWeekendScore.value = weekendScore;
+  isModalActive.value = !isModalActive.value;
+}
+
+function closeModal() {
+  isModalActive.value = false;
+  selectedDailyScore.value = undefined;
+  selectedWeekendScore.value = undefined;
+}
 </script>
 <style lang="scss">
 .card {
