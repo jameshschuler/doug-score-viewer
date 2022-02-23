@@ -75,7 +75,7 @@ const title = ref<string>("");
 const totalDougScoreBorder = computed(() => getDougScoreBracket(dougScore!.totalDougScore));
 const dailyScoreBorder = computed(() => getScoreBracket(dougScore!.dailyScore.total));
 const weekendScoreBorder = computed(() => getScoreBracket(dougScore!.weekendScore.total));
-const flagIconUrl = computed(() => new URL(`../${getFlagIcon(dougScore!.vehicle.originCountry)}`, import.meta.url).href);
+const flagIconUrl = computed(() => getFlagIcon(dougScore!.vehicle.originCountry));
 const filmingLocation = computed(() => `${dougScore!.filmingLocation.city}, ${dougScore!.filmingLocation.state}`);
 
 function handleDailyScoreModal(dailyScore: DailyScore) {

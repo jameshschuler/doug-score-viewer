@@ -1,6 +1,7 @@
 export function getFlagIcon ( originCountry: string ): string {
     const fileName = originCountry.toLowerCase().replace( " ", "-" );
-    return `assets/${fileName}.png`;
+    const url = new URL( `../assets/${fileName}.png`, import.meta.url ).href;
+    return url;
 }
 
 export function getDougScoreBracket ( dougScore: number ): string {
