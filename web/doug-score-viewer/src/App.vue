@@ -32,9 +32,26 @@ checkAPIHealth();
 </template>
 
 <style lang="scss">
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   font-family: "Open Sans", sans-serif;
+}
+
+body {
+  #app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    > div {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+  }
 }
 
 .is-red {
@@ -69,18 +86,6 @@ body {
   &:hover {
     background-color: hsl(348, 100%, 61%) !important;
     color: hsl(0, 0%, 100%);
-  }
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-
-  #app {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
   }
 }
 </style>

@@ -1,6 +1,6 @@
 export function getFlagIcon ( originCountry: string ): string {
     const fileName = originCountry.toLowerCase().replace( " ", "-" );
-    return `src/assets/${fileName}.png`;
+    return `assets/${fileName}.png`;
 }
 
 export function getDougScoreBracket ( dougScore: number ): string {

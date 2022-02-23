@@ -8,24 +8,24 @@
     </thead>
     <tbody>
       <tr>
-        <th>Features</th>
-        <td>{{ props.score?.features }}</td>
+        <th>Styling</th>
+        <td>{{ props.score?.styling }}</td>
       </tr>
       <tr>
-        <th>Comfort</th>
-        <td>{{ props.score?.comfort }}</td>
+        <th>Acceleration</th>
+        <td>{{ props.score?.acceleration }}</td>
       </tr>
       <tr>
-        <th>Quality</th>
-        <td>{{ props.score?.quality }}</td>
+        <th>Handling</th>
+        <td>{{ props.score?.handling }}</td>
       </tr>
       <tr>
-        <th>Practicality</th>
-        <td>{{ props.score?.practicality }}</td>
+        <th>Fun Factor</th>
+        <td>{{ props.score?.funFactor }}</td>
       </tr>
       <tr>
-        <th>Value</th>
-        <td>{{ props.score?.value }}</td>
+        <th>Cool Factor</th>
+        <td>{{ props.score?.coolFactor }}</td>
       </tr>
       <tr>
         <th>Total</th>
@@ -36,11 +36,11 @@
 </template>
 <script setup lang="ts">
 import { PropType } from "vue";
-import { DailyScore } from "../models/dougScore";
+import { WeekendScore } from "../models/dougScore";
 
 const props = defineProps({
   score: {
-    type: Object as PropType<DailyScore>,
+    type: Object as PropType<WeekendScore>,
     required: false,
   },
 });

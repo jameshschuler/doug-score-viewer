@@ -7,15 +7,12 @@
             <div class="is-flex is-justify-content-space-between is-align-items-center">
               <div>
                 <figure class="image is-32x32">
-                  <img :src="getFlagIcon(dougScore!.vehicle.originCountry)" :alt="dougScore!.vehicle.originCountry" />
+                  <img :src="flagIconUrl" :alt="dougScore!.vehicle.originCountry" />
                 </figure>
               </div>
               <div class="is-flex is-align-items-center">
-                <span class="mr-1 is-clickable">
-                  <i class="fas fa-lg fa-fw fa-map-marker-alt"></i>
-                </span>
                 <a class="icon is-red" :href="dougScore!.videoLink" target="_blank">
-                  <i class="fab fa-lg fa-fw fa-youtube"></i>
+                  <i class="fa-brands fa-lg fa-fw fa-youtube"></i>
                 </a>
               </div>
             </div>
@@ -31,21 +28,32 @@
             </div>
           </div>
           <div class="bottom">
-            <div class="is-flex">
-              <button class="button mr-2" :class="dailyScoreBorder" @click="handleDailyScoreModal(dougScore!.dailyScore)">
-                D: {{ dougScore!.dailyScore.total }}
-              </button>
-              <button class="button" :class="weekendScoreBorder" @click="handleWeekendScoreModal(dougScore!.weekendScore)">
-                W: {{ dougScore!.weekendScore.total }}
-              </button>
+            <div class="is-flex is-justify-content-space-between is-align-items-center">
+              <div>
+                <button class="button mr-2" :class="dailyScoreBorder" @click="handleDailyScoreModal(dougScore!.dailyScore)">
+                  D: {{ dougScore!.dailyScore.total }}
+                </button>
+                <button class="button" :class="weekendScoreBorder" @click="handleWeekendScoreModal(dougScore!.weekendScore)">
+                  W: {{ dougScore!.weekendScore.total }}
+                </button>
+              </div>
+              <div>
+                <span class="icon-text">
+                  <span class="icon">
+                    <i class="fa-solid fa-fw fa-video"></i>
+                  </span>
+                  <span>{{ filmingLocation }}</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <Modal :is-active="isModalActive" :close-modal="closeModal" title="View DailyScore">
+  <Modal :is-active="isModalActive" :close-modal="closeModal" :title="title">
     <DailyScoreTable v-if="selectedDailyScore" :score="selectedDailyScore"></DailyScoreTable>
+    <WeekendScoreTable v-if="selectedWeekendScore" :score="selectedWeekendScore"></WeekendScoreTable>
   </Modal>
 </template>
 <script setup lang="ts">
@@ -54,6 +62,7 @@ import { ref, computed } from "vue";
 import { DailyScore, WeekendScore } from "../models/dougScore";
 import { getFlagIcon, getDougScoreBracket, getScoreBracket } from "../utils";
 import DailyScoreTable from "./DailyScoreTable.vue";
+import WeekendScoreTable from "./WeekendScoreTable.vue";
 const { dougScore } = defineProps({
   dougScore: Object,
 });
@@ -61,30 +70,36 @@ const { dougScore } = defineProps({
 const isModalActive = ref<boolean>(false);
 const selectedDailyScore = ref<DailyScore | undefined>();
 const selectedWeekendScore = ref<WeekendScore | undefined>();
+const title = ref<string>("");
 
 const totalDougScoreBorder = computed(() => getDougScoreBracket(dougScore!.totalDougScore));
 const dailyScoreBorder = computed(() => getScoreBracket(dougScore!.dailyScore.total));
 const weekendScoreBorder = computed(() => getScoreBracket(dougScore!.weekendScore.total));
+const flagIconUrl = computed(() => new URL(`../${getFlagIcon(dougScore!.vehicle.originCountry)}`, import.meta.url).href);
+const filmingLocation = computed(() => `${dougScore!.filmingLocation.city}, ${dougScore!.filmingLocation.state}`);
 
 function handleDailyScoreModal(dailyScore: DailyScore) {
   selectedDailyScore.value = dailyScore;
   isModalActive.value = !isModalActive.value;
+  title.value = "View Daily Score";
 }
 
 function handleWeekendScoreModal(weekendScore: WeekendScore) {
   selectedWeekendScore.value = weekendScore;
   isModalActive.value = !isModalActive.value;
+  title.value = "View Weekend Score";
 }
 
 function closeModal() {
   isModalActive.value = false;
   selectedDailyScore.value = undefined;
   selectedWeekendScore.value = undefined;
+  title.value = "";
 }
 </script>
 <style lang="scss">
 .card {
-  min-height: 250px;
+  min-height: 275px;
 
   .total-doug-score {
     border-style: solid;

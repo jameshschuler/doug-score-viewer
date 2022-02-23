@@ -165,6 +165,11 @@ public class DougScoreService : IDougScoreService
     {
         _logger.LogInformation("SyncDougScores...");
 
+        if (_context.DougScores!.Any())
+        {
+            throw new AppException("DougScores were already synced.");
+        }
+
         var path = Path.Combine(_environment.ContentRootPath, "Data", "DougScore.xlsx");
         var wb = new XLWorkbook(path, XLEventTracking.Disabled);
 

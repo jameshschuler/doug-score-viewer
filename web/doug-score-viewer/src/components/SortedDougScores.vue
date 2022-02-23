@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3">
+  <div class="p-4">
     <h1 class="is-size-3 mb-3">{{ props.title }}</h1>
     <div v-if="!loading && !appError" class="columns is-mobile card-list outer">
       <Card v-for="dougScore in dougScores" :doug-score="dougScore" :key="dougScore.id" />
@@ -34,7 +34,7 @@ async function loadDougScores() {
 
   const { data, error } = await getDougScores(props.sortBy!);
 
-  if (!error) {
+  if (!error && data) {
     dougScores.value = data!.dougScores;
   } else {
     appError.value = error;
