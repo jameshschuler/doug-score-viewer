@@ -25,19 +25,22 @@ export async function getCachedResponse ( cacheName: string, url: string ): Prom
     return null;
 }
 
+// TODO: write tests for this
 function getExpiryDate (): string {
-    // TODO: need to use UTC 
     const expiry = new Date();
-    const currentHour = expiry.getHours();
+    const currentHour = expiry.getUTCHours();
 
-    if ( currentHour >= 4 ) {
-        expiry.setDate( expiry.getDate() + 1 );
-        expiry.setHours( 4, 0, 0 );
+    // If it's current past 10:05 AM UTC then set the expiry date to tomorrow at 10:05 AM UTC
+    // else set the expiry to today at 10:05 AM UTC
+    if ( currentHour >= 10 ) {
+        expiry.setDate( expiry.getUTCDate() + 1 );
+        expiry.setUTCHours( 2, 5, 0 );
     } else {
-        expiry.setHours( 4, 0, 0 );
+        expiry.setDate( expiry.getUTCDate() );
+        expiry.setHours( 2, 5, 0 );
     }
 
-    return expiry.toLocaleString();
+    return expiry.toUTCString();
 }
 
 function isCacheSupported () {
