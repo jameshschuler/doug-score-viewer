@@ -290,9 +290,10 @@ public class DougScoreService : IDougScoreService
                 .Where(e => e.Vehicle!.Year >= request.StartYear && e.Vehicle!.Year <= endYear );
         }
         
-        if (!string.IsNullOrWhiteSpace(request.OriginCountry))
+        if (!string.IsNullOrWhiteSpace(request.OriginCountries))
         {
-            dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.OriginCountry == request.OriginCountry);
+            var countries = request.OriginCountries.Split(",").Distinct();
+            dougScoresQuery = dougScoresQuery.Where(e => countries.Contains(e.Vehicle!.OriginCountry));
         }
 
         return dougScoresQuery;

@@ -9,7 +9,7 @@ public record SearchDougScoresRequest(
     [FromQuery(Name = "model")]string? Model,
     [FromQuery(Name = "startYear")][Range(1900, 2050)]int? StartYear,
     [FromQuery(Name = "endYear")][Range(1900, 2050)][GreaterThan]int? EndYear,
-    [FromQuery(Name = "originCountry")] string? OriginCountry,
+    [FromQuery(Name = "originCountries")] string? OriginCountries,
     [FromQuery(Name="sortBy")][SortBy] string SortBy = "TotalDougScore",
     [FromQuery(Name = "sortOrder")] string SortOrder = "desc",
     [FromQuery(Name = "page")]int Page = 1,

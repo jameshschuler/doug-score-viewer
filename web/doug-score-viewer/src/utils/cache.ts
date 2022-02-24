@@ -26,6 +26,7 @@ export async function getCachedResponse ( cacheName: string, url: string ): Prom
 }
 
 function getExpiryDate (): string {
+    // TODO: need to use UTC 
     const expiry = new Date();
     const currentHour = expiry.getHours();
 
