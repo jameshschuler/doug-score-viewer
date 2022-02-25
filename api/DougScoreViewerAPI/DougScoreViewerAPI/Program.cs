@@ -45,6 +45,7 @@ app.UseCors(policy => policy
     .SetIsOriginAllowed(origin => true)
     .AllowAnyMethod()
     .AllowAnyHeader()
+    .WithOrigins("http://localhost:3000/", "https://doug-score-viewer.vercel.app")
     .AllowCredentials());
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
