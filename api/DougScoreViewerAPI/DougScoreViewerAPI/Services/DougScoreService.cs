@@ -67,12 +67,13 @@ public class DougScoreService : IDougScoreService
 
     public async Task<ServiceResponse<GetDougScoresResponse>> GetFeatured()
     {
+        var utcNow = DateTime.UtcNow.Date;
         var featuredQuery = _context.FeaturedDougScores!
             .Include(e => e.DougScore).ThenInclude(e => e!.Vehicle)
             .Include(e => e.DougScore).ThenInclude(e => e!.DailyScore)
             .Include(e => e.DougScore).ThenInclude(e => e!.WeekendScore)
-            .Where(e => DateTime.Compare(e.DateFeatured.Date, DateTime.Today) == 0);
-
+            .Where(e => DateTime.Compare(e.DateFeatured.ToUniversalTime().Date, utcNow) == 0);
+        
         var featuredDougScores = await featuredQuery
             .Select(e => new DougScoreResponse(
                 new FilmingLocation(e.DougScore!.City, e.DougScore.State),
