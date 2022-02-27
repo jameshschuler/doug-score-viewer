@@ -33,6 +33,7 @@ async function loadFeatured() {
   } else {
     appError.value = error;
   }
+
   loading.value = false;
 }
 
