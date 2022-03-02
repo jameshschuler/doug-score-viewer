@@ -6,12 +6,54 @@
           <i class="fa fa-times fa-lg"> </i>
         </button>
       </div>
+      <div class="columns">
+        <div class="column is-10 is-offset-1">
+          <form class="p-3" @submit.prevent="handleSearch">
+            <div class="is-flex is-justify-content-space-between">
+              <div class="field is-fullwidth">
+                <label class="label">Min. Year</label>
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select v-model="formData.minYear">
+                      <option selected value="">Select Year</option>
+                      <option v-for="option in yearOptions" v-bind:value="option.value">
+                        {{ option.text }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-fullwidth ml-3">
+                <label class="label">Max. Year</label>
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select v-model="formData.maxYear">
+                      <option selected value="">Select Year</option>
+                      <option v-for="option in yearOptions" v-bind:value="option.value">
+                        {{ option.text }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <DynamicDropdown label="Make" />
+            <DynamicDropdown label="Model" :disabled="true" />
+
+            <button :class="{ 'is-loading': searching }" type="submit" class="button is-success is-outlined mt-3">Search</button>
+          </form>
+        </div>
+      </div>
     </div>
     <div class="slideout-mask"></div>
   </div>
 </template>
 <script setup lang="ts">
-import { PropType } from "vue";
+import { computed, PropType, ref } from "vue";
+import { SearchQuery } from "../models/searchQuery";
+import { getYearOptions } from "../utils/options";
+import DynamicDropdown from "./DynamicDropdown.vue";
 
 const props = defineProps({
   toggleSearchDrawer: {
@@ -19,8 +61,21 @@ const props = defineProps({
     required: true,
   },
 });
+
+const formData = ref<SearchQuery>({ minYear: "1960", maxYear: new Date().getUTCFullYear().toString() });
+const errors = ref<string>();
+const searching = ref<boolean>(false);
+
+const yearOptions = computed(() => getYearOptions());
+
+function handleSearch() {
+  searching.value = true;
+  console.log("handleSearch");
+
+  searching.value = false;
+}
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 $gray: #868e96;
 $gray-light: lighten($gray, 10%);
 $gray-lighter: lighten($gray-light, 10%);
@@ -31,6 +86,10 @@ $gray-lighter: lighten($gray-light, 10%);
 
 @mixin opacity($opacity: 0.5) {
   opacity: $opacity;
+}
+
+.is-fullwidth {
+  width: 100%;
 }
 
 .slideout {
