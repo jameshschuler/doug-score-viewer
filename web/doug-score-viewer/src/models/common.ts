@@ -9,3 +9,8 @@ export interface AppError {
     message: string;
     errorType: AppErrorType
 }
+
+export interface Option {
+    text: string;
+    value: number | string;
+}

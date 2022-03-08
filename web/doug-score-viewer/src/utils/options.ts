@@ -1,3 +1,5 @@
+import { Option } from '../models/common';
+
 export function getYearOptions (): Array<Option> {
     const currentYear = new Date().getUTCFullYear();
     const range = ( start: number, stop: number, step: number ): Option[] => {
@@ -11,9 +13,4 @@ export function getYearOptions (): Array<Option> {
     };
 
     return range( currentYear, 1960, -1 );
-}
-
-interface Option {
-    text: string;
-    value: number;
 }

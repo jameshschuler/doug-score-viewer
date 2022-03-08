@@ -38,8 +38,8 @@
               </div>
             </div>
 
-            <DynamicDropdown label="Make" />
-            <DynamicDropdown label="Model" :disabled="true" />
+            <DynamicDropdown label="Make" :data-endpoint="getMakeOptions" v-model:selectedValue="formData.make" />
+            <DynamicDropdown label="Model" :disabled="isNullEmptyOrWhitespace(formData.make)" />
 
             <button :class="{ 'is-loading': searching }" type="submit" class="button is-success is-outlined mt-3">Search</button>
           </form>
@@ -53,7 +53,9 @@
 import { computed, PropType, ref } from "vue";
 import { SearchQuery } from "../models/searchQuery";
 import { getYearOptions } from "../utils/options";
+import { isNullEmptyOrWhitespace } from "../utils/strings";
 import DynamicDropdown from "./DynamicDropdown.vue";
+import { getMakeOptions } from "../services/dataService";
 
 const props = defineProps({
   toggleSearchDrawer: {
@@ -62,7 +64,10 @@ const props = defineProps({
   },
 });
 
-const formData = ref<SearchQuery>({ minYear: "1960", maxYear: new Date().getUTCFullYear().toString() });
+const formData = ref<SearchQuery>({
+  minYear: "1960",
+  maxYear: new Date().getUTCFullYear().toString(),
+});
 const errors = ref<string>();
 const searching = ref<boolean>(false);
 
@@ -70,7 +75,7 @@ const yearOptions = computed(() => getYearOptions());
 
 function handleSearch() {
   searching.value = true;
-  console.log("handleSearch");
+  console.log("handleSearch", formData.value);
 
   searching.value = false;
 }

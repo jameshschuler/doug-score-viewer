@@ -1,3 +1,4 @@
+import { Option } from './common';
 import { DougScoreResponse } from './dougScore';
 
 export interface FeaturedDougScoresResponse {
@@ -10,4 +11,17 @@ export interface SearchDougScoresResponse {
     currentPage: number;
     totalCount: number;
     totalPageCount: number;
+}
+
+export interface AvailableMakesResponse {
+    makes: AvailableMake[]
+}
+
+export interface AvailableMake {
+    count: number;
+    name: string;
+}
+
+export interface OptionsResponse {
+    options?: Option[]
 }
