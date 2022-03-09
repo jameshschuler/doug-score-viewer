@@ -7,11 +7,16 @@ import LoadingOverlay from "./components/LoadingOverlay.vue";
 const loading = ref<boolean>(true);
 
 async function checkAPIHealth() {
-  const healthCheckUrl = `${import.meta.env.VITE_API_BASE_URL}/health`;
-  const response = await fetch(healthCheckUrl);
-  const data = await response.text();
-  console.info(`API responded with...${data}`);
-  loading.value = false;
+  try {
+    const healthCheckUrl = `${import.meta.env.VITE_API_BASE_URL}/health`;
+    const response = await fetch(healthCheckUrl);
+    const data = await response.text();
+    console.info(`API responded with...${data}`);
+    loading.value = false;
+  } catch (err) {
+    // TODO: show error message
+    console.error(err);
+  }
 }
 
 checkAPIHealth();

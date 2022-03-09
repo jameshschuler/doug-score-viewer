@@ -31,11 +31,10 @@ const error = ref<string>();
 const loading = ref<boolean>();
 
 async function loadOptions() {
-  if (props.dataEndpoint) {
+  if (props.dataEndpoint && !props.disabled) {
     loading.value = true;
 
     const response = (await props.dataEndpoint!()) as APIResponse<OptionsResponse>;
-    console.log(response);
 
     if (response.error) {
       error.value = response.error.message;

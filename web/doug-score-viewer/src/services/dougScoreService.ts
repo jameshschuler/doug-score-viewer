@@ -2,6 +2,7 @@ import { APIResponse } from '../models/common';
 import { AppErrorType } from '../models/enums/error';
 import { FeaturedDougScoresResponse, SearchDougScoresResponse } from '../models/response';
 import { cacheResponse, getCachedResponse } from '../utils/cache';
+import { handleErrorResponse } from '../utils/common';
 
 export async function getFeaturedDougScores (): Promise<APIResponse<FeaturedDougScoresResponse>> {
     try {
@@ -16,22 +17,12 @@ export async function getFeaturedDougScores (): Promise<APIResponse<FeaturedDoug
         }
 
         if ( responseData.data?.dougScores.length === 0 ) {
-            return {
-                error: {
-                    errorType: AppErrorType.NotFound,
-                    message: "No featured DougScores were found."
-                }
-            }
+            return handleErrorResponse( AppErrorType.NotFound, "No featured DougScores were found." );
         }
 
         return { data: responseData.data };
     } catch ( err ) {
-        return {
-            error: {
-                errorType: AppErrorType.BadRequest,
-                message: 'Unable to load featured DougScores. Please try again later!'
-            }
-        };
+        return handleErrorResponse( AppErrorType.BadRequest, "Unable to load featured DougScores. Please try again later!" );
     }
 }
 

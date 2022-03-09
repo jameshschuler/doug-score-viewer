@@ -39,8 +39,12 @@
             </div>
 
             <DynamicDropdown label="Make" :data-endpoint="getMakeOptions" v-model:selectedValue="formData.make" />
-            <DynamicDropdown label="Model" :disabled="isNullEmptyOrWhitespace(formData.make)" />
-
+            <DynamicDropdown
+              label="Model"
+              :data-endpoint="getModelOptions"
+              :disabled="isNullEmptyOrWhitespace(formData.make)"
+              v-model:selectedValue="formData.model"
+            />
             <button :class="{ 'is-loading': searching }" type="submit" class="button is-success is-outlined mt-3">Search</button>
           </form>
         </div>
@@ -55,7 +59,7 @@ import { SearchQuery } from "../models/searchQuery";
 import { getYearOptions } from "../utils/options";
 import { isNullEmptyOrWhitespace } from "../utils/strings";
 import DynamicDropdown from "./DynamicDropdown.vue";
-import { getMakeOptions } from "../services/dataService";
+import { getMakeOptions, getModelOptions } from "../services/dataService";
 
 const props = defineProps({
   toggleSearchDrawer: {
