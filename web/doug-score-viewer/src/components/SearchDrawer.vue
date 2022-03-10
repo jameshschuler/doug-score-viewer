@@ -2,6 +2,7 @@
   <div>
     <div class="slideout">
       <div class="slideout-header">
+        <h1 class="is-size-4">Search DougScores</h1>
         <button href="#" class="button is-ghost slideout-close" title="Close" @click="props.toggleSearchDrawer">
           <i class="fa fa-times fa-lg"> </i>
         </button>
@@ -43,8 +44,21 @@
               label="Model"
               :data-endpoint="getModelOptions"
               :disabled="isNullEmptyOrWhitespace(formData.make)"
+              :params="formData.make"
               v-model:selectedValue="formData.model"
             />
+
+            <div class="field">
+              <label class="label">Country</label>
+              <div class="tags">
+                <div class="tag is-white m-1 is-clickable" v-for="{ iconUrl, name } in countries">
+                  <figure class="image is-32x32">
+                    <img :src="iconUrl" :alt="name" />
+                  </figure>
+                </div>
+              </div>
+            </div>
+
             <button :class="{ 'is-loading': searching }" type="submit" class="button is-success is-outlined mt-3">Search</button>
           </form>
         </div>
@@ -60,6 +74,8 @@ import { getYearOptions } from "../utils/options";
 import { isNullEmptyOrWhitespace } from "../utils/strings";
 import DynamicDropdown from "./DynamicDropdown.vue";
 import { getMakeOptions, getModelOptions } from "../services/dataService";
+import { flagNames } from "../constants/flags";
+import { getFlagIcon } from "../utils";
 
 const props = defineProps({
   toggleSearchDrawer: {
@@ -76,6 +92,14 @@ const errors = ref<string>();
 const searching = ref<boolean>(false);
 
 const yearOptions = computed(() => getYearOptions());
+const countries = computed(() =>
+  flagNames.map((name: string) => {
+    return {
+      name: name.toUpperCase(),
+      iconUrl: getFlagIcon(name),
+    };
+  })
+);
 
 function handleSearch() {
   searching.value = true;
@@ -117,7 +141,7 @@ $gray-lighter: lighten($gray-light, 10%);
   .slideout-header {
     padding: 1.2em 1em 1.2em 1.7em;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
 
     .slideout-close {
       display: inline-block;

@@ -47,9 +47,9 @@ public class DataService : IDataService
         _logger.LogInformation($"Getting available models for {make}...");
         var query = _context.Vehicles!
             .Where(e => e.Make == make)
-            .OrderBy(e => e.Model)
             .Select(e => e.Model!)
-            .Distinct();
+            .Distinct()
+            .OrderBy(e => e);
         
         return new ServiceResponse<AvailableModelsResponse>
         {

@@ -15,12 +15,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { APIResponse, Option } from "../models/common";
 import { OptionsResponse } from "../models/response";
+import { isNullEmptyOrWhitespace } from "../utils/strings";
 
 const props = defineProps({
   dataEndpoint: Function,
+  params: String,
   label: String,
   disabled: Boolean,
   selectedValue: String,
@@ -30,11 +32,22 @@ const data = ref<Option[]>([]);
 const error = ref<string>();
 const loading = ref<boolean>();
 
+watch(
+  () => props.params,
+  async (newValue: string | undefined, oldValue: string | undefined) => {
+    if (!isNullEmptyOrWhitespace(newValue) && !props.disabled) {
+      await loadOptions();
+    } else {
+      data.value = [];
+    }
+  }
+);
+
 async function loadOptions() {
   if (props.dataEndpoint && !props.disabled) {
     loading.value = true;
 
-    const response = (await props.dataEndpoint!()) as APIResponse<OptionsResponse>;
+    const response = (await props.dataEndpoint!(props.params)) as APIResponse<OptionsResponse>;
 
     if (response.error) {
       error.value = response.error.message;

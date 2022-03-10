@@ -18,12 +18,7 @@ export interface AvailableMakesResponse {
 }
 
 export interface AvailableModelsResponse {
-    models: AvailableModel[]
-}
-
-export interface AvailableModel {
-    id: number;
-    name: string;
+    models: string[]
 }
 
 export interface AvailableMake {

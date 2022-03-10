@@ -1,6 +1,6 @@
 import { APIResponse, Option } from '../models/common';
 import { AppErrorType } from '../models/enums/error';
-import { AvailableMake, AvailableMakesResponse, AvailableModel, AvailableModelsResponse, OptionsResponse } from '../models/response';
+import { AvailableMake, AvailableMakesResponse, AvailableModelsResponse, OptionsResponse } from '../models/response';
 import { handleErrorResponse } from '../utils/common';
 import { isNullEmptyOrWhitespace } from '../utils/strings';
 
@@ -20,9 +20,9 @@ export async function getMakeOptions (): Promise<APIResponse<OptionsResponse>> {
             }
         }
 
-        const options = responseData.data?.makes.map( ( { name }: AvailableMake ) => {
+        const options = responseData.data?.makes.map( ( { count, name }: AvailableMake ) => {
             return {
-                text: name,
+                text: `${name} (${count})`,
                 value: name
             } as Option
         } );
@@ -57,7 +57,7 @@ export async function getModelOptions ( make?: string ): Promise<APIResponse<Opt
             }
         }
 
-        const options = responseData.data?.models.map( ( { name }: AvailableModel ) => {
+        const options = responseData.data?.models.map( ( name: string ) => {
             return {
                 text: name,
                 value: name
