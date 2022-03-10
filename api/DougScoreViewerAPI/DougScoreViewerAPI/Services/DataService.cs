@@ -48,11 +48,12 @@ public class DataService : IDataService
         var query = _context.Vehicles!
             .Where(e => e.Make == make)
             .OrderBy(e => e.Model)
-            .Select(e => new AvailableModelResponse(e.Id, e.Model!));
+            .Select(e => e.Model!)
+            .Distinct();
         
-        return new ServiceResponse<AvailableModelsResponse>()
+        return new ServiceResponse<AvailableModelsResponse>
         {
-            Data = new AvailableModelsResponse(query.ToList())
+            Data = new AvailableModelsResponse(query)
         };
     }
 }

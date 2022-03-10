@@ -1,3 +1,3 @@
 namespace DougScoreViewerAPI.Models.Response;
 
-public record AvailableModelResponse(int Id, string Name);
+public record AvailableModelResponse(string Name);
