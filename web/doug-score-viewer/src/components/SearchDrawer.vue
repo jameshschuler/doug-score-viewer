@@ -48,18 +48,9 @@
               v-model:selectedValue="formData.model"
             />
 
-            <div class="field">
-              <label class="label">Country</label>
-              <div class="tags">
-                <div class="tag is-white m-1 is-clickable" v-for="{ iconUrl, name } in countries">
-                  <figure class="image is-32x32">
-                    <img :src="iconUrl" :alt="name" />
-                  </figure>
-                </div>
-              </div>
-            </div>
+            <CountryTags v-model:originCountries="formData.originCountries" />
 
-            <button :class="{ 'is-loading': searching }" type="submit" class="button is-success is-outlined mt-3">Search</button>
+            <button :class="{ 'is-loading': searching }" type="submit" class="button is-success is-outlined mt-4">Search</button>
           </form>
         </div>
       </div>
@@ -69,12 +60,13 @@
 </template>
 <script setup lang="ts">
 import { computed, PropType, ref } from "vue";
-import { SearchQuery } from "../models/searchQuery";
+import { Country, SearchQuery } from "../models/searchQuery";
 import { getYearOptions } from "../utils/options";
 import { isNullEmptyOrWhitespace } from "../utils/strings";
 import DynamicDropdown from "./DynamicDropdown.vue";
 import { getMakeOptions, getModelOptions } from "../services/dataService";
-import { flagNames } from "../constants/flags";
+import CountryTags from "./CountryTags.vue";
+import { countries } from "../constants/flags";
 import { getFlagIcon } from "../utils";
 
 const props = defineProps({
@@ -87,24 +79,24 @@ const props = defineProps({
 const formData = ref<SearchQuery>({
   minYear: "1960",
   maxYear: new Date().getUTCFullYear().toString(),
+  originCountries: [
+    ...(countries.map(({ name, flagIcon }) => {
+      return {
+        name,
+        selected: true,
+        icon: getFlagIcon(flagIcon),
+      };
+    }) as Country[]),
+  ],
 });
 const errors = ref<string>();
 const searching = ref<boolean>(false);
 
 const yearOptions = computed(() => getYearOptions());
-const countries = computed(() =>
-  flagNames.map((name: string) => {
-    return {
-      name: name.toUpperCase(),
-      iconUrl: getFlagIcon(name),
-    };
-  })
-);
 
 function handleSearch() {
   searching.value = true;
   console.log("handleSearch", formData.value);
-
   searching.value = false;
 }
 </script>
