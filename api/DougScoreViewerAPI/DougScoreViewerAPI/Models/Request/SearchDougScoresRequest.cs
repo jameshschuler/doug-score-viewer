@@ -7,8 +7,8 @@ namespace DougScoreViewerAPI.Models.Request;
 public record SearchDougScoresRequest(
     [FromQuery(Name = "make")]string? Make,
     [FromQuery(Name = "model")]string? Model,
-    [FromQuery(Name = "startYear")][Range(1900, 2050)]int? StartYear,
-    [FromQuery(Name = "endYear")][Range(1900, 2050)][GreaterThan]int? EndYear,
+    [FromQuery(Name = "minYear")][Range(1900, 2050)]int? MinYear,
+    [FromQuery(Name = "maxYear")][Range(1900, 2050)][GreaterThan]int? MaxYear,
     [FromQuery(Name = "originCountries")] string? OriginCountries,
     [FromQuery(Name="sortBy")][SortBy] string SortBy = "TotalDougScore",
     [FromQuery(Name = "sortOrder")] string SortOrder = "desc",

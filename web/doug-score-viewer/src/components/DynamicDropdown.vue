@@ -3,7 +3,11 @@
     <label class="label">{{ props.label }}</label>
     <div class="control">
       <div class="select is-fullwidth" :class="{ 'is-loading': loading, 'is-danger': error }">
-        <select :disabled="props.disabled" @change="$emit('update:selectedValue', ($event.target! as HTMLSelectElement).value)">
+        <select
+          :disabled="props.disabled"
+          v-model="selectedValue"
+          @change="$emit('update:selectedValue', ($event.target! as HTMLSelectElement).value)"
+        >
           <option value="">Select {{ props.label }}</option>
           <option v-for="option in data" v-bind:value="option.value">
             {{ option.text }}

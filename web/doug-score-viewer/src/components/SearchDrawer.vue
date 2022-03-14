@@ -50,7 +50,14 @@
 
             <CountryTags v-model:originCountries="formData.originCountries" />
 
-            <button :class="{ 'is-loading': searching }" type="submit" class="button is-success is-outlined mt-4">Search</button>
+            <div class="field is-grouped">
+              <div class="control mt-5">
+                <button :class="{ 'is-loading': searching }" type="submit" class="button is-success is-outlined">Search</button>
+              </div>
+              <div class="control mt-5">
+                <button class="button is-outlined is-info" @click="resetForm">Reset</button>
+              </div>
+            </div>
           </form>
         </div>
       </div>
@@ -76,7 +83,11 @@ const props = defineProps({
   },
 });
 
+const yearOptions = computed(() => getYearOptions());
+
 const formData = ref<SearchQuery>({
+  make: "",
+  model: "",
   minYear: "1960",
   maxYear: new Date().getUTCFullYear().toString(),
   originCountries: [
@@ -92,12 +103,41 @@ const formData = ref<SearchQuery>({
 const errors = ref<string>();
 const searching = ref<boolean>(false);
 
-const yearOptions = computed(() => getYearOptions());
-
 function handleSearch() {
   searching.value = true;
-  console.log("handleSearch", formData.value);
+  const { make, model, minYear, maxYear, originCountries } = formData.value;
+  const searchRequest = {
+    make,
+    model,
+    minYear,
+    maxYear,
+    originCountries: originCountries.filter((c) => c.selected).map((c) => c.name),
+  };
+
+  // TODO: send request
+  // TODO: Get response, navigate to search results view, and display results
+
+  console.log(searchRequest);
+
   searching.value = false;
+}
+
+function resetForm() {
+  formData.value = {
+    make: "",
+    model: "",
+    minYear: "1960",
+    maxYear: new Date().getUTCFullYear().toString(),
+    originCountries: [
+      ...(countries.map(({ name, flagIcon }) => {
+        return {
+          name,
+          selected: true,
+          icon: getFlagIcon(flagIcon),
+        };
+      }) as Country[]),
+    ],
+  };
 }
 </script>
 <style lang="scss" scoped>

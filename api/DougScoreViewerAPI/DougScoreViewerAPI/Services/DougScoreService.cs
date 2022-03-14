@@ -283,12 +283,12 @@ public class DougScoreService : IDougScoreService
             dougScoresQuery = dougScoresQuery.Where(e => e.Vehicle!.Model == request.Model);
         }
         
-        if (request.StartYear.HasValue)
+        if (request.MinYear.HasValue)
         {
-            var endYear = request.EndYear ?? DateTime.Now.Year;
+            var maxYear = request.MaxYear ?? DateTime.Now.Year;
             
             dougScoresQuery = dougScoresQuery
-                .Where(e => e.Vehicle!.Year >= request.StartYear && e.Vehicle!.Year <= endYear );
+                .Where(e => e.Vehicle!.Year >= request.MinYear && e.Vehicle!.Year <= maxYear );
         }
         
         if (!string.IsNullOrWhiteSpace(request.OriginCountries))

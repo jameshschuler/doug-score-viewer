@@ -9,12 +9,12 @@ public class GreaterThanAttribute : ValidationAttribute
     {
         var request = (SearchDougScoresRequest)validationContext.ObjectInstance;
         
-        if (value is null || request.StartYear is null)
+        if (value is null || request.MinYear is null)
         {
             return ValidationResult.Success;
         }
 
-        return (int)value < request.StartYear ? 
-            new ValidationResult($"End Year ({value}) cannot be before Start Year ({request.StartYear}).") : ValidationResult.Success;
+        return (int)value < request.MinYear ? 
+            new ValidationResult($"Max. Year ({value}) cannot be before the Min. Year ({request.MinYear}).") : ValidationResult.Success;
     }
 }
