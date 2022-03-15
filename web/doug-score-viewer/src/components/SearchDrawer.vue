@@ -2,13 +2,16 @@
   <div>
     <div class="slideout">
       <div class="slideout-header">
-        <h1 class="is-size-4">Search DougScores</h1>
-        <button href="#" class="button is-ghost slideout-close" title="Close" @click="props.toggleSearchDrawer">
-          <i class="fa fa-times fa-lg"> </i>
+        <h1 class="is-size-4 has-text-weight-semibold">Search DougScores</h1>
+        <button href="#" class="button is-ghost slideout-close" title="Close" @click="store.toggleSearchDrawer()">
+          <i class="fa fa-times fa-lg"></i>
         </button>
       </div>
       <div class="columns">
         <div class="column is-10 is-offset-1">
+          <div class="mb-3" v-if="!searching && appError">
+            <Notification :dismissible="false" :appError="appError" />
+          </div>
           <form class="p-3" @submit.prevent="handleSearch">
             <div class="is-flex is-justify-content-space-between">
               <div class="field is-fullwidth">
@@ -55,7 +58,7 @@
                 <button :class="{ 'is-loading': searching }" type="submit" class="button is-success is-outlined">Search</button>
               </div>
               <div class="control mt-5">
-                <button class="button is-outlined is-info" @click="resetForm">Reset</button>
+                <button class="button is-outlined is-info" @click="resetForm" type="button">Reset</button>
               </div>
             </div>
           </form>
@@ -66,7 +69,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, PropType, ref } from "vue";
+import { computed, ref } from "vue";
 import { Country, SearchQuery } from "../models/searchQuery";
 import { getYearOptions } from "../utils/options";
 import { isNullEmptyOrWhitespace } from "../utils/strings";
@@ -75,14 +78,14 @@ import { getMakeOptions, getModelOptions } from "../services/dataService";
 import CountryTags from "./CountryTags.vue";
 import { countries } from "../constants/flags";
 import { getFlagIcon } from "../utils";
+import { SearchDougScoreRequest } from "../models/request";
+import { searchDougScores } from "../services/dougScoreService";
+import { useRouter } from "vue-router";
+import { AppError } from "../models/common";
+import Notification from "./Notification.vue";
+import { store } from "../store";
 
-const props = defineProps({
-  toggleSearchDrawer: {
-    type: Function as PropType<(payload: MouseEvent) => void>,
-    required: true,
-  },
-});
-
+const router = useRouter();
 const yearOptions = computed(() => getYearOptions());
 
 const formData = ref<SearchQuery>({
@@ -100,10 +103,10 @@ const formData = ref<SearchQuery>({
     }) as Country[]),
   ],
 });
-const errors = ref<string>();
+const appError = ref<AppError>();
 const searching = ref<boolean>(false);
 
-function handleSearch() {
+async function handleSearch() {
   searching.value = true;
   const { make, model, minYear, maxYear, originCountries } = formData.value;
   const searchRequest = {
@@ -112,12 +115,16 @@ function handleSearch() {
     minYear,
     maxYear,
     originCountries: originCountries.filter((c) => c.selected).map((c) => c.name),
-  };
+  } as SearchDougScoreRequest;
 
-  // TODO: send request
-  // TODO: Get response, navigate to search results view, and display results
-
-  console.log(searchRequest);
+  const response = await searchDougScores(searchRequest);
+  if (response.error) {
+    appError.value = response.error;
+  } else {
+    store.toggleSearchDrawer();
+    store.setSearchResults(response.data);
+    await router.push("/results");
+  }
 
   searching.value = false;
 }
@@ -138,6 +145,7 @@ function resetForm() {
       }) as Country[]),
     ],
   };
+  appError.value = undefined;
 }
 </script>
 <style lang="scss" scoped>

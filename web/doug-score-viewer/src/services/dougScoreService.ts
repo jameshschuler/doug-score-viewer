@@ -1,8 +1,10 @@
 import { APIResponse } from '../models/common';
 import { AppErrorType } from '../models/enums/error';
+import { SearchDougScoreRequest } from '../models/request';
 import { FeaturedDougScoresResponse, SearchDougScoresResponse } from '../models/response';
 import { cacheResponse, getCachedResponse } from '../utils/cache';
 import { handleErrorResponse } from '../utils/common';
+import { isNullEmptyOrWhitespace } from '../utils/strings';
 
 export async function getFeaturedDougScores (): Promise<APIResponse<FeaturedDougScoresResponse>> {
     try {
@@ -38,6 +40,40 @@ export async function getDougScores ( sortBy: string ): Promise<APIResponse<Sear
                 error: {
                     errorType: AppErrorType.NotFound,
                     message: "No DougScores were found."
+                }
+            }
+        }
+
+        return { data: responseData.data };
+    } catch ( err ) {
+        return {
+            error: {
+                errorType: AppErrorType.BadRequest,
+                message: 'Unable to load DougScores. Please try again later!'
+            }
+        };
+    }
+}
+
+export async function searchDougScores ( { minYear, maxYear, make, model, originCountries }: SearchDougScoreRequest ): Promise<APIResponse<SearchDougScoresResponse>> {
+    try {
+        let url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/search?minYear=${minYear}&maxYear=${maxYear}`;
+
+        url += !isNullEmptyOrWhitespace( make ) ? `&make=${make}` : '';
+        url += !isNullEmptyOrWhitespace( model ) ? `&make=${model}` : '';
+
+        if ( originCountries.length > 0 ) {
+            url += `&originCountries=${originCountries.map( s => s )}`;
+        }
+
+        const response = await fetch( url );
+        const responseData = ( await response.json() ) as APIResponse<SearchDougScoresResponse>;
+
+        if ( responseData.data?.dougScores.length === 0 ) {
+            return {
+                error: {
+                    errorType: AppErrorType.NotFound,
+                    message: "No DougScores were found matching the given search criteria."
                 }
             }
         }

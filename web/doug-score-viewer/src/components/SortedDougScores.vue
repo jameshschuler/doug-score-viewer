@@ -18,7 +18,6 @@ import Notification from "./Notification.vue";
 import { AppError } from "../models/common";
 import { DougScoreResponse } from "../models/dougScore";
 import { getDougScores } from "../services/dougScoreService";
-import { NotificationType } from "../models/enums/notification";
 
 const props = defineProps({
   sortBy: String,

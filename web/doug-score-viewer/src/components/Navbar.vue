@@ -5,7 +5,7 @@
     aria-label="main navigation"
   >
     <div class="navbar-brand">
-      <span class="navbar-item has-text-white is-clickable" @click="toggleSearchDrawer()">
+      <span class="navbar-item has-text-white is-clickable" @click="store.toggleSearchDrawer()">
         <i class="fas fa-lg fa-fw fa-search"></i>
       </span>
       <router-link to="/" class="navbar-item is-size-3 has-text-white">DougScore Viewer</router-link>
@@ -14,17 +14,11 @@
       <i class="fa-solid fa-2x fa-fw fa-circle-info"></i>
     </router-link>
   </nav>
-  <SearchDrawer :class="{ 'slideout-open': showingSearchDrawer }" :toggle-search-drawer="toggleSearchDrawer" />
+  <SearchDrawer :class="{ 'slideout-open': store.isSearchDrawerOpen }" />
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
+import { store } from "../store";
 import SearchDrawer from "./SearchDrawer.vue";
-
-const showingSearchDrawer = ref(false);
-
-function toggleSearchDrawer() {
-  showingSearchDrawer.value = !showingSearchDrawer.value;
-}
 </script>
 <style lang="scss" scoped>
 @import "bulma/sass/utilities/mixins.sass";

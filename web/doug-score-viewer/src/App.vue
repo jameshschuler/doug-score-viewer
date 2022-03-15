@@ -32,7 +32,6 @@ checkAPIHealth();
     </main>
     <Footer />
   </div>
-
   <LoadingOverlay v-if="loading" />
 </template>
 
