@@ -19,7 +19,6 @@
                 <div class="control">
                   <div class="select is-fullwidth">
                     <select v-model="formData.minYear">
-                      <option selected value="">Select Year</option>
                       <option v-for="option in yearOptions" v-bind:value="option.value">
                         {{ option.text }}
                       </option>
@@ -32,7 +31,6 @@
                 <div class="control">
                   <div class="select is-fullwidth">
                     <select v-model="formData.maxYear">
-                      <option selected value="">Select Year</option>
                       <option v-for="option in yearOptions" v-bind:value="option.value">
                         {{ option.text }}
                       </option>
@@ -70,20 +68,20 @@
 </template>
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
+import { countries } from "../constants/flags";
+import { AppError } from "../models/common";
+import { AppErrorType } from "../models/enums/error";
 import { Country, SearchQuery } from "../models/searchQuery";
+import { getMakeOptions, getModelOptions } from "../services/dataService";
+import { searchDougScores } from "../services/dougScoreService";
+import { store } from "../store";
+import { getFlagIcon } from "../utils";
 import { getYearOptions } from "../utils/options";
 import { isNullEmptyOrWhitespace } from "../utils/strings";
-import DynamicDropdown from "./DynamicDropdown.vue";
-import { getMakeOptions, getModelOptions } from "../services/dataService";
 import CountryTags from "./CountryTags.vue";
-import { countries } from "../constants/flags";
-import { getFlagIcon } from "../utils";
-import { SearchDougScoreRequest } from "../models/request";
-import { searchDougScores } from "../services/dougScoreService";
-import { useRouter } from "vue-router";
-import { AppError } from "../models/common";
+import DynamicDropdown from "./DynamicDropdown.vue";
 import Notification from "./Notification.vue";
-import { store } from "../store";
 
 const router = useRouter();
 const yearOptions = computed(() => getYearOptions());
@@ -108,21 +106,14 @@ const searching = ref<boolean>(false);
 
 async function handleSearch() {
   searching.value = true;
-  const { make, model, minYear, maxYear, originCountries } = formData.value;
-  const searchRequest = {
-    make,
-    model,
-    minYear,
-    maxYear,
-    originCountries: originCountries.filter((c) => c.selected).map((c) => c.name),
-  } as SearchDougScoreRequest;
-
-  const response = await searchDougScores(searchRequest);
-  if (response.error) {
+  const response = await searchDougScores(formData.value);
+  if (response.error && response.error.errorType === AppErrorType.BadRequest) {
     appError.value = response.error;
   } else {
     store.toggleSearchDrawer();
     store.setSearchResults(response.data);
+    store.setCurrentSearchQuery({ ...formData.value });
+
     await router.push("/results");
   }
 

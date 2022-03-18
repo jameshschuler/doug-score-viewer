@@ -1,4 +1,5 @@
 export enum AppErrorType {
     NotFound,
-    BadRequest
+    BadRequest,
+    Server
 }

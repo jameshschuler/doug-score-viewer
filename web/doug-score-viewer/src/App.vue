@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import Navbar from "./components/Navbar.vue";
-import Footer from "./components/Footer.vue";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import Footer from "./components/Footer.vue";
 import LoadingOverlay from "./components/LoadingOverlay.vue";
+import Navbar from "./components/Navbar.vue";
+import { AppErrorType } from "./models/enums/error";
+import { store } from "./store";
+
+const router = useRouter();
 
 const loading = ref<boolean>(true);
 
@@ -14,8 +19,9 @@ async function checkAPIHealth() {
     console.info(`API responded with...${data}`);
     loading.value = false;
   } catch (err) {
-    // TODO: show error message
-    console.error(err);
+    store.setError({ errorType: AppErrorType.Server, message: (err as Error).message });
+    loading.value = false;
+    router.push("/error");
   }
 }
 

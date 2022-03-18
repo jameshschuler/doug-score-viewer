@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import About from '../pages/About.vue';
+import Error from '../pages/Error.vue';
 import Landing from '../pages/Landing.vue';
+import NotFound from '../pages/NotFound.vue';
 import SearchResults from '../pages/SearchResults.vue';
 
 const routes: Array<RouteRecordRaw> = [
@@ -18,6 +20,16 @@ const routes: Array<RouteRecordRaw> = [
         path: '/results',
         name: 'SearchResults',
         component: SearchResults
+    },
+    {
+        path: '/error',
+        name: 'Error',
+        component: Error
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: NotFound
     },
 ];
 

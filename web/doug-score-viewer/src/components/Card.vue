@@ -5,11 +5,7 @@
         <div class="information p-4 is-flex is-flex-direction-column is-justify-content-space-between">
           <div class="top">
             <div class="is-flex is-justify-content-space-between is-align-items-center">
-              <div>
-                <figure class="image is-32x32">
-                  <img :src="flagIconUrl" :alt="dougScore!.vehicle.originCountry" />
-                </figure>
-              </div>
+              <Flag :originCountry="dougScore!.vehicle.originCountry" />
               <div class="is-flex is-align-items-center">
                 <a class="icon is-red" :href="dougScore!.videoLink" target="_blank">
                   <i class="fa-brands fa-lg fa-fw fa-youtube"></i>
@@ -57,14 +53,18 @@
   </Modal>
 </template>
 <script setup lang="ts">
-import Modal from "./Modal.vue";
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { DailyScore, WeekendScore } from "../models/dougScore";
-import { getFlagIcon, getDougScoreBracket, getScoreBracket } from "../utils";
+import { getDougScoreBracket, getScoreBracket } from "../utils";
 import DailyScoreTable from "./DailyScoreTable.vue";
+import Flag from "./Flag.vue";
+import Modal from "./Modal.vue";
 import WeekendScoreTable from "./WeekendScoreTable.vue";
 const { dougScore } = defineProps({
-  dougScore: Object,
+  dougScore: {
+    type: Object,
+    required: true,
+  },
 });
 
 const isModalActive = ref<boolean>(false);
@@ -75,7 +75,6 @@ const title = ref<string>("");
 const totalDougScoreBorder = computed(() => getDougScoreBracket(dougScore!.totalDougScore));
 const dailyScoreBorder = computed(() => getScoreBracket(dougScore!.dailyScore.total));
 const weekendScoreBorder = computed(() => getScoreBracket(dougScore!.weekendScore.total));
-const flagIconUrl = computed(() => getFlagIcon(dougScore!.vehicle.originCountry));
 const filmingLocation = computed(() => `${dougScore!.filmingLocation.city}, ${dougScore!.filmingLocation.state}`);
 
 function handleDailyScoreModal(dailyScore: DailyScore) {

@@ -29,6 +29,7 @@ function getNotificationType(appError: AppError): NotificationType {
     case AppErrorType.NotFound:
       return NotificationType.Info;
     case AppErrorType.BadRequest:
+    case AppErrorType.Server:
       return NotificationType.Error;
     default:
       return NotificationType.Info;

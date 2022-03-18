@@ -4,8 +4,8 @@
       <div class="column box is-10 is-offset-1">
         <Featured />
         <SortedDougScores sort-by="TotalDougScore" title="Top DougScores" />
-        <SortedDougScores sort-by="DailyScore" title="Top Daily Scores" />
         <SortedDougScores sort-by="WeekendScore" title="Top Weekend Scores" />
+        <SortedDougScores sort-by="DailyScore" title="Top Daily Scores" />
       </div>
     </div>
   </div>

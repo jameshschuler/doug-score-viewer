@@ -1,7 +1,8 @@
+import messages from '../constants/messages';
 import { APIResponse } from '../models/common';
 import { AppErrorType } from '../models/enums/error';
-import { SearchDougScoreRequest } from '../models/request';
 import { FeaturedDougScoresResponse, SearchDougScoresResponse } from '../models/response';
+import { SearchQuery } from '../models/searchQuery';
 import { cacheResponse, getCachedResponse } from '../utils/cache';
 import { handleErrorResponse } from '../utils/common';
 import { isNullEmptyOrWhitespace } from '../utils/strings';
@@ -55,15 +56,16 @@ export async function getDougScores ( sortBy: string ): Promise<APIResponse<Sear
     }
 }
 
-export async function searchDougScores ( { minYear, maxYear, make, model, originCountries }: SearchDougScoreRequest ): Promise<APIResponse<SearchDougScoresResponse>> {
+export async function searchDougScores ( { minYear, maxYear, make, model, originCountries }: SearchQuery ): Promise<APIResponse<SearchDougScoresResponse>> {
     try {
-        let url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/search?minYear=${minYear}&maxYear=${maxYear}`;
+        let url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/search?minYear=${minYear}&maxYear=${maxYear}&pageSize=15`;
 
         url += !isNullEmptyOrWhitespace( make ) ? `&make=${make}` : '';
-        url += !isNullEmptyOrWhitespace( model ) ? `&make=${model}` : '';
+        url += !isNullEmptyOrWhitespace( model ) ? `&model=${model}` : '';
 
-        if ( originCountries.length > 0 ) {
-            url += `&originCountries=${originCountries.map( s => s )}`;
+        let originCountriesParam = originCountries.filter( ( c ) => c.selected ).map( ( c ) => c.name );
+        if ( originCountriesParam.length > 0 ) {
+            url += `&originCountries=${originCountriesParam.map( s => s )}`;
         }
 
         const response = await fetch( url );
@@ -73,7 +75,7 @@ export async function searchDougScores ( { minYear, maxYear, make, model, origin
             return {
                 error: {
                     errorType: AppErrorType.NotFound,
-                    message: "No DougScores were found matching the given search criteria."
+                    message: messages.noSearchResults
                 }
             }
         }

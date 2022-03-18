@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4">
+  <div class="p-5">
     <h1 class="is-size-3 mb-3">{{ props.title }}</h1>
     <div v-if="!loading && !appError" class="columns is-mobile card-list outer">
       <Card v-for="dougScore in dougScores" :doug-score="dougScore" :key="dougScore.id" />
@@ -12,12 +12,12 @@
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
-import Card from "./Card.vue";
-import LoadingIndicator from "./LoadingIndicator.vue";
-import Notification from "./Notification.vue";
 import { AppError } from "../models/common";
 import { DougScoreResponse } from "../models/dougScore";
 import { getDougScores } from "../services/dougScoreService";
+import Card from "./Card.vue";
+import LoadingIndicator from "./LoadingIndicator.vue";
+import Notification from "./Notification.vue";
 
 const props = defineProps({
   sortBy: String,
