@@ -72,14 +72,14 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import { countries } from "../constants/flags";
+import { countries } from "../constants/countries";
 import { AppError } from "../models/common";
+import { Country, SelectableCountry } from "../models/country";
 import { AppErrorType } from "../models/enums/error";
-import { Country, SearchQuery } from "../models/searchQuery";
+import { SearchQuery } from "../models/searchQuery";
 import { getMakeOptions, getModelOptions } from "../services/dataService";
 import { searchDougScores } from "../services/dougScoreService";
 import { store } from "../store";
-import { getFlagIcon } from "../utils";
 import { getYearOptions } from "../utils/options";
 import { isNullEmptyOrWhitespace } from "../utils/strings";
 import CountryTags from "./CountryTags.vue";
@@ -96,13 +96,12 @@ const formData = ref<SearchQuery>({
   minYear: "1960",
   maxYear: new Date().getUTCFullYear().toString(),
   originCountries: [
-    ...(countries.map(({ name, flagIcon }) => {
+    ...(countries.map((c: Country) => {
       return {
-        name,
+        ...c,
         selected: true,
-        icon: getFlagIcon(flagIcon),
       };
-    }) as Country[]),
+    }) as SelectableCountry[]),
   ],
 });
 const appError = ref<AppError>();
@@ -131,13 +130,12 @@ function resetForm() {
     minYear: "1960",
     maxYear: new Date().getUTCFullYear().toString(),
     originCountries: [
-      ...(countries.map(({ name, flagIcon }) => {
+      ...(countries.map((c: Country) => {
         return {
-          name,
+          ...c,
           selected: true,
-          icon: getFlagIcon(flagIcon),
         };
-      }) as Country[]),
+      }) as SelectableCountry[]),
     ],
   };
   appError.value = undefined;

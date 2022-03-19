@@ -5,7 +5,7 @@
       <p>
         <a href="https://github.com/jameshschuler/doug-score-viewer" target="_blank"><i class="fab fa-fw fa-lg fa-github-alt"></i></a>
       </p>
-      <a href="https://www.flaticon.com/free-icons/flag" title="flag icons">Flag icons created by Freepik - Flaticon</a>
+      <a href="https://www.flaticon.com/free-icons/flag" title="flag icons" target="_blank">Flag icons created by Freepik - Flaticon</a>
     </div>
   </footer>
 </template>

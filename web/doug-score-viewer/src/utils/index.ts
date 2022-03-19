@@ -1,7 +1,14 @@
-export function getFlagIcon ( originCountry: string ): string {
-    const fileName = originCountry.toLowerCase().replace( " ", "-" );
-    const url = new URL( `../assets/${fileName}.png`, import.meta.url ).href;
+import { countries } from '../constants/countries';
+import { Country } from '../models/country';
+
+export function getFlagIcon ( flagIconName: string ): string {
+    const url = new URL( `../assets/flags/${flagIconName}.png`, import.meta.url ).href;
     return url;
+}
+
+export function getCountry ( countryName: string ): Country {
+    const country = countries.find( e => e.name === countryName );
+    return country!;
 }
 
 export function getDougScoreBracket ( dougScore: number ): string {

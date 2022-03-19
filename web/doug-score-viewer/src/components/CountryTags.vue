@@ -2,10 +2,14 @@
   <div class="field">
     <label class="label">Country</label>
     <div class="tags">
-      <div class="tag is-white m-2 p-1 is-clickable tooltip" @click="toggleTag(name)" v-for="{ icon, name, selected } in props.originCountries">
-        <span class="tooltiptext">{{ name }}</span>
+      <div
+        class="tag is-white m-2 p-1 is-clickable tooltip"
+        @click="toggleTag(name)"
+        v-for="{ displayName, flagIconName, name, selected } in props.originCountries"
+      >
+        <span class="tooltiptext">{{ displayName }}</span>
         <figure class="image is-32x32">
-          <img :src="icon" :alt="name" :class="{ 'is-selected': selected }" />
+          <img :src="getFlagIcon(flagIconName)" :alt="displayName" :class="{ 'is-selected': selected }" />
         </figure>
       </div>
     </div>
@@ -13,10 +17,11 @@
 </template>
 <script setup lang="ts">
 import { PropType } from "vue";
-import { Country } from "../models/searchQuery";
+import { SelectableCountry } from "../models/country";
+import { getFlagIcon } from "../utils/index";
 
 const props = defineProps({
-  originCountries: Array as PropType<Country[]>,
+  originCountries: Array as PropType<SelectableCountry[]>,
 });
 
 function toggleTag(name: string) {
