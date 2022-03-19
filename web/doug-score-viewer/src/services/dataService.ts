@@ -4,7 +4,6 @@ import { AvailableMake, AvailableMakesResponse, AvailableModelsResponse, Options
 import { handleErrorResponse } from '../utils/common';
 import { isNullEmptyOrWhitespace } from '../utils/strings';
 
-// TODO: cache this?
 export async function getMakeOptions (): Promise<APIResponse<OptionsResponse>> {
     try {
         const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/data/makes`;

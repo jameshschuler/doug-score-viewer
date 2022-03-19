@@ -28,16 +28,12 @@ export async function getCachedResponse ( cacheName: string, url: string ): Prom
 // TODO: write tests for this
 function getExpiryDate (): string {
     const expiry = new Date();
-    const currentHour = expiry.getUTCHours();
-
-    // If it's current past 10:05 AM UTC then set the expiry date to tomorrow at 10:05 AM UTC
-    // else set the expiry to today at 10:05 AM UTC
-    if ( currentHour >= 10 ) {
-        expiry.setDate( expiry.getUTCDate() + 1 );
-        expiry.setUTCHours( 2, 5, 0 );
+    if ( expiry.getUTCHours() > 0 && expiry.getUTCMinutes() > 5 ) {
+        expiry.setUTCDate( expiry.getUTCDate() + 1 );
+        expiry.setUTCHours( 0, 5, 0 );
     } else {
-        expiry.setDate( expiry.getUTCDate() );
-        expiry.setHours( 2, 5, 0 );
+        expiry.setUTCDate( expiry.getUTCDate() );
+        expiry.setUTCHours( 0, 5, 0 );
     }
 
     return expiry.toUTCString();

@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div class="tooltip">
+    <span class="tooltiptext">{{ props.originCountry }}</span>
     <figure class="image is-32x32">
-      <img :src="flagIconUrl" :alt="flagIconUrl" />
+      <img :src="flagIconUrl" :alt="props.originCountry" />
     </figure>
   </div>
 </template>

@@ -1,6 +1,6 @@
 # DougScore Viewer
 
-Simple responsive web app created using Vue w/ TypeScript, Vite, and Bulma (scss).
+Simple web app created using Vue w/ TypeScript, Vite, and Bulma (scss).
 
 ## Frontend Technology
 

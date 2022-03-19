@@ -34,43 +34,4 @@ function toggleTag(name: string) {
     opacity: 1;
   }
 }
-
-/* Tooltip container */
-.tooltip {
-  position: relative;
-  display: inline-block;
-
-  &:hover {
-    .tooltiptext {
-      visibility: visible;
-    }
-  }
-
-  .tooltiptext {
-    visibility: hidden;
-    background-color: hsl(0, 0%, 0%);
-    opacity: 0.9;
-    color: hsl(0, 0%, 100%);
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-    width: 120px;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
-    position: absolute;
-    z-index: 1;
-  }
-}
-
-.tooltip .tooltiptext::after {
-  content: " ";
-  position: absolute;
-  top: 100%; /* At the bottom of the tooltip */
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: hsl(0, 0%, 0%) transparent transparent transparent;
-}
 </style>

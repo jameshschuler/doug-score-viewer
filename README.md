@@ -1,3 +1,3 @@
 ## DougScore Viewer
 
-Hobby project using .NET / C# and Vue 3 / TypeScript to provide a well-designed, modern approach for browsing the various cars reviewed by Doug DeMuro!
+Hobby project built with C# (.NET 6) and Vue 3 (TypeScript) to allow users to quickly search for and view car reviews (DougScores) by Doug DeMuro.

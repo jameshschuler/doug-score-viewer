@@ -12,6 +12,9 @@
           <div class="mb-3" v-if="!searching && appError">
             <Notification :dismissible="false" :appError="appError" />
           </div>
+          <Message
+            message="<p><b>Tip!</b> Press <kbd class='kbc-button kbc-button-xxs'>Ctrl</kbd> + <kbd class='kbc-button kbc-button-xxs'>q</kbd> to toggle this search drawer.</p>"
+          />
           <form class="p-3" @submit.prevent="handleSearch">
             <div class="is-flex is-justify-content-space-between">
               <div class="field is-fullwidth">
@@ -81,6 +84,7 @@ import { getYearOptions } from "../utils/options";
 import { isNullEmptyOrWhitespace } from "../utils/strings";
 import CountryTags from "./CountryTags.vue";
 import DynamicDropdown from "./DynamicDropdown.vue";
+import Message from "./Message.vue";
 import Notification from "./Notification.vue";
 
 const router = useRouter();
