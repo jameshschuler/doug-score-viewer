@@ -54,6 +54,19 @@
 
             <CountryTags v-model:originCountries="formData.originCountries" />
 
+            <div class="field is-fullwidth">
+              <label class="label">Sort by</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select v-model="formData.sortByOption">
+                    <option v-for="option in sortByOptions" :value="option.value">
+                      {{ option.text }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <div class="field is-grouped">
               <div class="control mt-5">
                 <button :class="{ 'is-loading': searching }" type="submit" class="button is-success is-outlined">Search</button>
@@ -73,6 +86,7 @@
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { countries } from "../constants/countries";
+import { sortByOptions, TotalDougScoreDesc } from "../constants/sortOptions";
 import { AppError } from "../models/common";
 import { Country, SelectableCountry } from "../models/country";
 import { AppErrorType } from "../models/enums/error";
@@ -103,13 +117,14 @@ const formData = ref<SearchQuery>({
       };
     }) as SelectableCountry[]),
   ],
+  sortByOption: TotalDougScoreDesc,
 });
 const appError = ref<AppError>();
 const searching = ref<boolean>(false);
 
 async function handleSearch() {
   searching.value = true;
-  const response = await searchDougScores(formData.value);
+  const response = await searchDougScores({ ...formData.value });
   if (response.error && response.error.errorType === AppErrorType.BadRequest) {
     appError.value = response.error;
   } else {
@@ -137,6 +152,7 @@ function resetForm() {
         };
       }) as SelectableCountry[]),
     ],
+    sortByOption: TotalDougScoreDesc,
   };
   appError.value = undefined;
 }

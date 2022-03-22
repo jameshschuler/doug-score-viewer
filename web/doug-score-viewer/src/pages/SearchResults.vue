@@ -3,10 +3,7 @@
     <div class="columns">
       <div class="column box is-10 is-offset-1">
         <div class="p-3">
-          <h1 class="is-size-3" v-if="!isNullEmptyOrWhitespace(currentSearchQueryDisplay)">
-            Showing {{ store.searchResults?.currentCount }} DougScores for "<b>{{ currentSearchQueryDisplay }}</b
-            >"
-          </h1>
+          <h1 class="is-size-3" v-if="!isNullEmptyOrWhitespace(currentSearchQueryDisplay)" v-html="searchResultsText"></h1>
           <div class="mt-2 mb-4">
             <p><b>Including:</b></p>
             <Flag class="mr-2" :country="country" v-for="country in currentSelectedCountries" />
@@ -45,6 +42,7 @@ const appError = computed(() => {
 });
 
 // TODO: this shouldn't update when the state actually changes from the search drawer
+// Maybe use watch on the store.currentSearchQuery.originCountries array
 const currentSelectedCountries = computed(() => {
   const { currentSearchQuery } = store;
   if (currentSearchQuery && currentSearchQuery.originCountries.length !== 0) {
@@ -53,6 +51,7 @@ const currentSelectedCountries = computed(() => {
 
   return [];
 });
+
 const currentSearchQueryDisplay = computed(() => {
   const { currentSearchQuery } = store;
   if (currentSearchQuery) {
@@ -67,5 +66,7 @@ const currentSearchQueryDisplay = computed(() => {
 
   return null;
 });
+
+const searchResultsText = computed(() => `Showing ${store.searchResults?.currentCount} DougScores for "<b>${currentSearchQueryDisplay.value}</b>"`);
 </script>
 <style lang="scss"></style>

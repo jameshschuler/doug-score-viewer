@@ -5,5 +5,6 @@ export interface SearchQuery {
     maxYear: string;
     model?: string;
     make?: string;
-    originCountries: SelectableCountry[]
+    originCountries: SelectableCountry[];
+    sortByOption: string;
 }
