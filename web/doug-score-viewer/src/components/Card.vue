@@ -1,5 +1,5 @@
 <template>
-  <div class="column is-one-third-desktop is-full-touch">
+  <div class="column is-full-touch" :class="isNullEmptyOrWhitespace(size) ? 'is-one-third-desktop' : size">
     <div class="card is-relative">
       <div class="overlay has-text-centered">
         <div class="information p-4 is-flex is-flex-direction-column is-justify-content-space-between">
@@ -53,18 +53,21 @@
   </Modal>
 </template>
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, PropType, ref } from "vue";
 import { DailyScore, WeekendScore } from "../models/dougScore";
 import { getCountry, getDougScoreBracket, getScoreBracket } from "../utils";
+import { isNullEmptyOrWhitespace } from "../utils/strings";
 import DailyScoreTable from "./DailyScoreTable.vue";
 import Flag from "./Flag.vue";
 import Modal from "./Modal.vue";
 import WeekendScoreTable from "./WeekendScoreTable.vue";
-const { dougScore } = defineProps({
+
+const { dougScore, size } = defineProps({
   dougScore: {
     type: Object,
     required: true,
   },
+  size: String as PropType<string>,
 });
 
 const isModalActive = ref<boolean>(false);
@@ -98,9 +101,19 @@ function closeModal() {
 }
 </script>
 <style lang="scss">
-.card {
-  min-height: 275px;
+.column.is-one-third-desktop {
+  .card {
+    min-height: 275px;
+  }
+}
 
+.column.is-two-fifths-desktop {
+  .card {
+    min-height: 300px;
+  }
+}
+
+.card {
   .total-doug-score {
     border-style: solid;
     border-width: 2px;

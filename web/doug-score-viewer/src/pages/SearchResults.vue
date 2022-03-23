@@ -41,15 +41,9 @@ const appError = computed(() => {
   return null;
 });
 
-// TODO: this shouldn't update when the state actually changes from the search drawer
-// Maybe use watch on the store.currentSearchQuery.originCountries array
 const currentSelectedCountries = computed(() => {
-  const { currentSearchQuery } = store;
-  if (currentSearchQuery && currentSearchQuery.originCountries.length !== 0) {
-    return currentSearchQuery.originCountries.filter((c) => c.selected);
-  }
-
-  return [];
+  const { currentCountries } = store;
+  return currentCountries && currentCountries.length !== 0 ? currentCountries : [];
 });
 
 const currentSearchQueryDisplay = computed(() => {
