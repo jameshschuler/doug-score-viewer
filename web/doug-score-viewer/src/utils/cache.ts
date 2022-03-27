@@ -1,18 +1,30 @@
 import { APIResponse } from '../models/common';
-import { FeaturedDougScoresResponse } from '../models/response';
 
-export async function cacheResponse ( cacheName: string, url: string, response: Response ): Promise<void> {
+export enum Caches {
+    FeaturedDougScores = 'FeaturedDougScores',
+    TotalDougScore = 'TotalDougScore',
+    WeekendScore = 'WeekendScore',
+    DailyScore = 'DailyScore'
+}
+
+export async function cacheResponse ( cacheName: Caches, url: string, response: Response ): Promise<void> {
     if ( !isCacheSupported ) return;
 
     const cache = await caches.open( cacheName );
 
     await cache.put( url, response.clone() );
 
-    const expiry = getExpiryDate();
+    let expiry = '';
+    if ( cacheName === Caches.FeaturedDougScores ) {
+        expiry = getFeaturedExpiryDate();
+    } else {
+        expiry = getExpiryDate( 7 );
+    }
+
     localStorage.setItem( cacheName, expiry );
 }
 
-export async function getCachedResponse ( cacheName: string, url: string ): Promise<APIResponse<FeaturedDougScoresResponse> | null> {
+export async function getCachedResponse<T> ( cacheName: Caches, url: string ): Promise<APIResponse<T> | null> {
     if ( !isCacheSupported ) return null;
 
     const cache = await caches.open( cacheName );
@@ -26,7 +38,7 @@ export async function getCachedResponse ( cacheName: string, url: string ): Prom
 }
 
 // TODO: write tests for this
-function getExpiryDate (): string {
+function getFeaturedExpiryDate (): string {
     const expiry = new Date();
     if ( expiry.getUTCHours() > 0 && expiry.getUTCMinutes() > 5 ) {
         expiry.setUTCDate( expiry.getUTCDate() + 1 );
@@ -39,11 +51,18 @@ function getExpiryDate (): string {
     return expiry.toUTCString();
 }
 
+function getExpiryDate ( numDays: number = 1 ): string {
+    const expiry = new Date();
+    expiry.setUTCDate( expiry.getUTCDate() + numDays );
+
+    return expiry.toUTCString();
+}
+
 function isCacheSupported () {
     return 'caches' in window;
 }
 
-function isCacheExpired ( key: string ): boolean {
+function isCacheExpired ( key: Caches ): boolean {
     const item = localStorage.getItem( key );
 
     if ( !item ) {

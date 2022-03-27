@@ -1,5 +1,6 @@
 <template>
   <footer class="footer py-3 mt-5 is-hidden-touch">
+    <hr />
     <div class="content has-text-centered">
       <p>Made with <i class="fas fa-fw fa-heart has-text-danger"></i> by <a href="https://jamesschuler.io" target="_blank">James Schuler</a>.</p>
       <p>
@@ -10,4 +11,8 @@
   </footer>
 </template>
 <script setup lang="ts"></script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.footer {
+  background-color: hsl(60, 67%, 99%);
+}
+</style>

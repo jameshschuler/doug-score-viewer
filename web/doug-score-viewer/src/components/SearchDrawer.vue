@@ -132,7 +132,7 @@ async function handleSearch() {
     store.setSearchResults(response.data);
     store.setCurrentSearchQuery({ ...formData.value });
 
-    await router.push("/results");
+    await router.push("/search/results");
   }
 
   searching.value = false;

@@ -1,14 +1,10 @@
 <template>
-  <nav
-    class="navbar has-background-primary is-flex is-justify-content-space-between is-align-items-center"
-    role="navigation"
-    aria-label="main navigation"
-  >
+  <nav class="navbar is-flex is-justify-content-space-between is-align-items-center" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <span class="navbar-item has-text-white is-clickable" @click="store.toggleSearchDrawer()">
         <i class="fas fa-lg fa-fw fa-search"></i>
       </span>
-      <router-link to="/" id="home" class="navbar-item is-size-3 has-text-white has-text-weight-medium">DougScore Viewer</router-link>
+      <router-link to="/" id="home" class="navbar-item is-size-3 has-text-white has-text-weight-semibold">DougScore Viewer</router-link>
     </div>
     <router-link to="/about" class="navbar-item" id="navbar-item-about">
       <i class="fa-solid fa-2x fa-fw fa-circle-info"></i>
@@ -22,6 +18,10 @@ import SearchDrawer from "./SearchDrawer.vue";
 </script>
 <style lang="scss" scoped>
 @import "bulma/sass/utilities/mixins.sass";
+
+.navbar {
+  background-color: hsl(129, 45%, 57%);
+}
 
 #home {
   &:hover,

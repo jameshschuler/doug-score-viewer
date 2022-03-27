@@ -13,7 +13,7 @@
               </div>
             </div>
             <div class="is-flex">
-              <div class="is-size-5">{{ dougScore!.vehicle.year }} {{ dougScore!.vehicle.make }} {{ dougScore!.vehicle.model }}</div>
+              <div class="is-size-4">{{ dougScore!.vehicle.year }} {{ dougScore!.vehicle.make }} {{ dougScore!.vehicle.model }}</div>
             </div>
           </div>
           <div class="middle my-3">

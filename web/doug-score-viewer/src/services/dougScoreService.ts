@@ -3,7 +3,7 @@ import { APIResponse } from '../models/common';
 import { AppErrorType } from '../models/enums/error';
 import { FeaturedDougScoresResponse, SearchDougScoresResponse } from '../models/response';
 import { SearchQuery } from '../models/searchQuery';
-import { cacheResponse, getCachedResponse } from '../utils/cache';
+import { cacheResponse, Caches, getCachedResponse } from '../utils/cache';
 import { handleErrorResponse } from '../utils/common';
 import { isNullEmptyOrWhitespace } from '../utils/strings';
 
@@ -11,10 +11,10 @@ export async function getFeaturedDougScores (): Promise<APIResponse<FeaturedDoug
     try {
         const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/featured`;
 
-        let responseData = await getCachedResponse( 'getFeaturedDougScores', url );
+        let responseData = await getCachedResponse<FeaturedDougScoresResponse>( Caches.FeaturedDougScores, url );
         if ( responseData === null ) {
             const response = await fetch( url );
-            await cacheResponse( 'getFeaturedDougScores', url, response );
+            await cacheResponse( Caches.FeaturedDougScores, url, response );
 
             responseData = ( await response.json() ) as APIResponse<FeaturedDougScoresResponse>;
         }
@@ -29,12 +29,17 @@ export async function getFeaturedDougScores (): Promise<APIResponse<FeaturedDoug
     }
 }
 
-// TODO: implement caching for this response
-export async function getDougScores ( sortBy: string ): Promise<APIResponse<SearchDougScoresResponse>> {
+export async function getDougScores ( sortBy: Caches ): Promise<APIResponse<SearchDougScoresResponse>> {
     try {
         const url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/search?sortBy=${sortBy}`;
-        const response = await fetch( url );
-        const responseData = ( await response.json() ) as APIResponse<SearchDougScoresResponse>;
+
+        let responseData = await getCachedResponse<SearchDougScoresResponse>( sortBy, url );
+        if ( responseData === null ) {
+            const response = await fetch( url );
+            await cacheResponse( sortBy, url, response );
+
+            responseData = ( await response.json() ) as APIResponse<SearchDougScoresResponse>;
+        }
 
         if ( responseData.data?.dougScores.length === 0 ) {
             return {

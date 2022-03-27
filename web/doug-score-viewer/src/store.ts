@@ -28,7 +28,7 @@ export const store = reactive<StoreState>( {
     setCurrentSearchQuery ( searchQuery: SearchQuery ) {
         this.currentSearchQuery = searchQuery ?? null;
         if ( this.currentSearchQuery ) {
-            this.s = this.currentSearchQuery.originCountries.filter( c => c.selected );
+            this.currentCountries = this.currentSearchQuery.originCountries.filter( c => c.selected );
         }
     },
     toggleSearchDrawer () {

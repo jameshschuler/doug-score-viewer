@@ -55,6 +55,7 @@ checkAPIHealth();
 html,
 body {
   font-family: "Open Sans", sans-serif;
+  background-color: hsl(60, 67%, 99%);
 }
 
 body {

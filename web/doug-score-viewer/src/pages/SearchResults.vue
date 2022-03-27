@@ -5,7 +5,7 @@
         <div class="p-3">
           <h1 class="is-size-3" v-if="!isNullEmptyOrWhitespace(currentSearchQueryDisplay)" v-html="searchResultsText"></h1>
           <div class="mt-2 mb-4">
-            <p><b>Including:</b></p>
+            <p><b>Including from:</b></p>
             <Flag class="mr-2" :country="country" v-for="country in currentSelectedCountries" />
           </div>
           <div v-if="!appError" class="columns is-flex-wrap-wrap">
