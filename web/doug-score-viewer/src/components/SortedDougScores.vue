@@ -11,16 +11,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
+import { PropType, ref } from "vue";
 import { AppError } from "../models/common";
 import { DougScoreResponse } from "../models/dougScore";
 import { getDougScores } from "../services/dougScoreService";
+import { Caches } from "../utils/cache";
 import Card from "./Card.vue";
 import LoadingIndicator from "./LoadingIndicator.vue";
 import Notification from "./Notification.vue";
 
 const props = defineProps({
-  sortBy: String,
+  sortBy: String as PropType<Caches>,
   title: String,
 });
 
