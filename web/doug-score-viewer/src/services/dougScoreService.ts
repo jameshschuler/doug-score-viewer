@@ -14,9 +14,11 @@ export async function getFeaturedDougScores (): Promise<APIResponse<FeaturedDoug
         let responseData = await getCachedResponse<FeaturedDougScoresResponse>( Caches.FeaturedDougScores, url );
         if ( responseData === null ) {
             const response = await fetch( url );
-            await cacheResponse( Caches.FeaturedDougScores, url, response );
-
             responseData = ( await response.json() ) as APIResponse<FeaturedDougScoresResponse>;
+
+            if ( responseData.error ) {
+                await cacheResponse( Caches.FeaturedDougScores, url, response );
+            }
         }
 
         if ( responseData.data?.dougScores.length === 0 ) {
@@ -36,9 +38,11 @@ export async function getDougScores ( sortBy: Caches ): Promise<APIResponse<Sear
         let responseData = await getCachedResponse<SearchDougScoresResponse>( sortBy, url );
         if ( responseData === null ) {
             const response = await fetch( url );
-            await cacheResponse( sortBy, url, response );
-
             responseData = ( await response.json() ) as APIResponse<SearchDougScoresResponse>;
+
+            if ( responseData.error ) {
+                await cacheResponse( sortBy, url, response );
+            }
         }
 
         if ( responseData.data?.dougScores.length === 0 ) {
