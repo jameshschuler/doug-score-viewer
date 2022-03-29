@@ -33,7 +33,7 @@
                   W: {{ dougScore!.weekendScore.total }}
                 </button>
               </div>
-              <div>
+              <div class="film-location">
                 <span class="icon-text">
                   <span class="icon">
                     <i class="fa-solid fa-fw fa-video"></i>
@@ -101,6 +101,8 @@ function closeModal() {
 }
 </script>
 <style lang="scss">
+@import "bulma/sass/utilities/mixins.sass";
+
 .column.is-one-third-desktop {
   .card {
     min-height: 275px;
@@ -118,6 +120,12 @@ function closeModal() {
     border-style: solid;
     border-width: 2px;
     border-radius: 4px;
+  }
+
+  @include mobile {
+    .film-location {
+      display: none;
+    }
   }
 }
 

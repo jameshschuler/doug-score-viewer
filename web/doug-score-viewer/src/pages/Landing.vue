@@ -3,6 +3,7 @@
     <div class="columns">
       <div class="column is-10 is-offset-1">
         <Featured />
+        <hr />
         <SortedDougScores :sort-by="Caches.TotalDougScore" title="Top DougScores" />
         <SortedDougScores :sort-by="Caches.WeekendScore" title="Top Weekend Scores" />
         <SortedDougScores :sort-by="Caches.DailyScore" title="Top Daily Scores" />

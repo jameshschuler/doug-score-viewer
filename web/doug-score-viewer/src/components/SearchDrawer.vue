@@ -186,6 +186,8 @@ $gray-lighter: lighten($gray-light, 10%);
   z-index: 1000;
   transform: translateX(-100%);
   transition: transform 0.3s ease, width 0.3s ease;
+  overflow-y: scroll;
+  overflow-x: hidden;
 
   .slideout-header {
     padding: 1.2em 1em 1.2em 1.7em;
