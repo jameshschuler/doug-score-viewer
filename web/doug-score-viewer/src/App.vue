@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { useRouter } from "vue-router";
 import Footer from "./components/Footer.vue";
 import LoadingOverlay from "./components/LoadingOverlay.vue";
@@ -9,15 +8,13 @@ import { store } from "./store";
 
 const router = useRouter();
 
-const loading = ref<boolean>(true);
-
 async function checkAPIHealth() {
   try {
     const healthCheckUrl = `${import.meta.env.VITE_API_BASE_URL}/health`;
     const response = await fetch(healthCheckUrl);
     const data = await response.text();
     console.info(`API responded with...${data}`);
-    loading.value = false;
+    store.setLoading(false);
 
     window.onkeydown = function (ev: KeyboardEvent) {
       if (ev.ctrlKey && ev.key === "q") {
@@ -26,7 +23,7 @@ async function checkAPIHealth() {
     };
   } catch (err) {
     store.setError({ errorType: AppErrorType.Server, message: (err as Error).message });
-    loading.value = false;
+    store.setLoading(false);
     router.push("/error");
   }
 }
@@ -35,7 +32,7 @@ checkAPIHealth();
 </script>
 
 <template>
-  <div v-if="!loading">
+  <div v-if="!store.loading">
     <Navbar />
     <main class="container is-fluid my-6">
       <div class="columns">
@@ -44,7 +41,7 @@ checkAPIHealth();
     </main>
     <Footer />
   </div>
-  <LoadingOverlay v-if="loading" />
+  <LoadingOverlay v-if="store.loading" />
 </template>
 
 <style lang="scss">

@@ -4,7 +4,9 @@
       <span class="navbar-item has-text-white is-clickable" @click="store.toggleSearchDrawer()">
         <i class="fas fa-lg fa-fw fa-search"></i>
       </span>
-      <router-link to="/" id="home" class="navbar-item is-size-3 has-text-white has-text-weight-semibold">DougScore Viewer</router-link>
+      <router-link to="/" id="home" class="navbar-item is-size-3 is-size-4-mobile has-text-white has-text-weight-semibold"
+        >DougScore Viewer</router-link
+      >
     </div>
     <router-link to="/about" class="navbar-item" id="navbar-item-about">
       <i class="fa-solid fa-2x fa-fw fa-circle-info"></i>
