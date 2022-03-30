@@ -1,6 +1,6 @@
 import { Country, SelectableCountry } from '../models/country';
 import { Countries } from './countries';
-import { TotalDougScoreDesc } from './sortOptions';
+import { SortBy } from './sortOptions';
 
 export const initialSearchQuery = {
     make: "",
@@ -15,5 +15,5 @@ export const initialSearchQuery = {
             };
         } ) as SelectableCountry[] ),
     ],
-    sortByOption: TotalDougScoreDesc,
+    sortByOption: SortBy.TotalDougScoreDesc,
 }

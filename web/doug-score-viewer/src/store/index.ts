@@ -1,8 +1,10 @@
 import { reactive } from 'vue';
+import { SortBy } from '../constants/sortOptions';
 import { AppError } from '../models/common';
 import { SelectableCountry } from '../models/country';
 import { SearchDougScoresResponse } from '../models/response';
 import { SearchQuery } from '../models/searchQuery';
+import { isNullEmptyOrWhitespace } from '../utils/strings';
 
 interface StoreState {
     currentSearchQuery: SearchQuery | null;
@@ -11,10 +13,12 @@ interface StoreState {
     loading: boolean;
     searchResults: SearchDougScoresResponse | null;
     currentCountries: SelectableCountry[];
+    getCurrentSortByOption: () => SortBy;
     setCurrentSearchQuery: ( searchQuery: SearchQuery ) => void;
     setError: ( appError: AppError ) => void;
     setLoading: ( value: boolean ) => void;
     setSearchResults: ( data?: SearchDougScoresResponse ) => void;
+    setSortByOption: ( sortByOption: SortBy ) => void;
     toggleSearchDrawer: Function,
 }
 
@@ -25,6 +29,13 @@ export const store = reactive<StoreState>( {
     searchResults: null,
     currentCountries: [],
     currentSearchQuery: null,
+    getCurrentSortByOption (): SortBy {
+        if ( !isNullEmptyOrWhitespace( store.currentSearchQuery?.sortByOption ) ) {
+            return store.currentSearchQuery?.sortByOption as SortBy;
+        }
+
+        return SortBy.TotalDougScoreDesc;
+    },
     setError ( appError: AppError ) {
         this.error = appError ?? null;
     },
@@ -42,5 +53,10 @@ export const store = reactive<StoreState>( {
     },
     setSearchResults ( data?: SearchDougScoresResponse ) {
         this.searchResults = data ?? null;
+    },
+    setSortByOption ( sortByOption: SortBy ) {
+        if ( this.currentSearchQuery !== null ) {
+            this.currentSearchQuery.sortByOption = sortByOption;
+        }
     }
 } );

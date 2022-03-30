@@ -1,6 +1,6 @@
 <template>
   <div class="p-5">
-    <h1 class="is-size-4 mb-5">{{ props.title }}</h1>
+    <h1 class="is-size-4 mb-5 has-text-weight-semibold">{{ props.title }}</h1>
     <div v-if="!loading && !appError" class="columns is-mobile card-list outer">
       <Card v-for="dougScore in dougScores" :doug-score="dougScore" :key="dougScore.id" />
     </div>

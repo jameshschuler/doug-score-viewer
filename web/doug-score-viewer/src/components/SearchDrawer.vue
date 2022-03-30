@@ -86,7 +86,7 @@
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { Countries, initialSearchQuery } from "../constants";
-import { sortByOptions, TotalDougScoreDesc } from "../constants/sortOptions";
+import { SortBy, sortByOptions } from "../constants/sortOptions";
 import { AppError } from "../models/common";
 import { Country, SelectableCountry } from "../models/country";
 import { AppErrorType } from "../models/enums/error";
@@ -94,6 +94,7 @@ import { SearchQuery } from "../models/searchQuery";
 import { getMakeOptions, getModelOptions } from "../services/dataService";
 import { searchDougScores } from "../services/dougScoreService";
 import { store } from "../store";
+import { getUrlSearchParams } from "../store/actions";
 import { getYearOptions } from "../utils/options";
 import { isNullEmptyOrWhitespace } from "../utils/strings";
 import CountryTags from "./CountryTags.vue";
@@ -123,7 +124,8 @@ async function handleSearch() {
     store.setSearchResults(response.data);
     store.setCurrentSearchQuery({ ...formData.value });
 
-    await router.push("/search/results");
+    const params = getUrlSearchParams(store.currentSearchQuery);
+    await router.push(`/search/results${params}`);
   }
 
   searching.value = false;
@@ -143,7 +145,7 @@ function resetForm() {
         };
       }) as SelectableCountry[]),
     ],
-    sortByOption: TotalDougScoreDesc,
+    sortByOption: SortBy.TotalDougScoreDesc,
   };
   appError.value = undefined;
 }
