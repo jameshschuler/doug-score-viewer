@@ -1,6 +1,6 @@
 import { Country } from '../models/country';
 
-export const countries: Country[] = [
+export const Countries: Country[] = [
     { displayName: 'East Germany', name: 'East Germany', flagIconName: 'east-germany' },
     { displayName: 'France', name: 'France', flagIconName: 'france' },
     { displayName: 'Germany', name: 'Germany', flagIconName: 'germany' },

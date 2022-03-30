@@ -1,8 +1,8 @@
 import { reactive } from 'vue';
-import { AppError } from './models/common';
-import { SelectableCountry } from './models/country';
-import { SearchDougScoresResponse } from './models/response';
-import { SearchQuery } from './models/searchQuery';
+import { AppError } from '../models/common';
+import { SelectableCountry } from '../models/country';
+import { SearchDougScoresResponse } from '../models/response';
+import { SearchQuery } from '../models/searchQuery';
 
 interface StoreState {
     currentSearchQuery: SearchQuery | null;

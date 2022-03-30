@@ -1,4 +1,4 @@
-import { countries } from '../constants/countries';
+import { Countries } from '../constants/countries';
 import { Country } from '../models/country';
 
 export function getFlagIcon ( flagIconName: string ): string {
@@ -7,7 +7,7 @@ export function getFlagIcon ( flagIconName: string ): string {
 }
 
 export function getCountry ( countryName: string ): Country {
-    const country = countries.find( e => e.name === countryName );
+    const country = Countries.find( e => e.name === countryName );
     return country!;
 }
 

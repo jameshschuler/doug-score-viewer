@@ -13,5 +13,5 @@ public record SearchDougScoresRequest(
     [FromQuery(Name="sortBy")][SortBy] string SortBy = "TotalDougScore",
     [FromQuery(Name = "sortOrder")] string SortOrder = "desc",
     [FromQuery(Name = "page")]int Page = 1,
-    [FromQuery(Name = "pageSize")][Range(1, 20)] int PageSize = 5);
+    [FromQuery(Name = "pageSize")][Range(1, 25)] int PageSize = 5);
     

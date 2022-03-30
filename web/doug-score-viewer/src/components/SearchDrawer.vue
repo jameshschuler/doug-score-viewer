@@ -85,7 +85,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import { countries } from "../constants/countries";
+import { Countries, initialSearchQuery } from "../constants";
 import { sortByOptions, TotalDougScoreDesc } from "../constants/sortOptions";
 import { AppError } from "../models/common";
 import { Country, SelectableCountry } from "../models/country";
@@ -104,21 +104,12 @@ import Notification from "./Notification.vue";
 const router = useRouter();
 const yearOptions = computed(() => getYearOptions());
 
-const formData = ref<SearchQuery>({
-  make: "",
-  model: "",
-  minYear: "1960",
-  maxYear: new Date().getUTCFullYear().toString(),
-  originCountries: [
-    ...(countries.map((c: Country) => {
-      return {
-        ...c,
-        selected: true,
-      };
-    }) as SelectableCountry[]),
-  ],
-  sortByOption: TotalDougScoreDesc,
-});
+const formData = ref<SearchQuery>(initialSearchQuery);
+
+if (store.currentSearchQuery !== null) {
+  formData.value = store.currentSearchQuery;
+}
+
 const appError = ref<AppError>();
 const searching = ref<boolean>(false);
 
@@ -145,7 +136,7 @@ function resetForm() {
     minYear: "1960",
     maxYear: new Date().getUTCFullYear().toString(),
     originCountries: [
-      ...(countries.map((c: Country) => {
+      ...(Countries.map((c: Country) => {
         return {
           ...c,
           selected: true,

@@ -1,18 +1,36 @@
 <template>
   <div>
     <div class="columns">
-      <div class="column box is-10 is-offset-1">
+      <div class="column is-10 is-offset-1">
         <div class="p-3">
-          <h1 class="is-size-3" v-if="!isNullEmptyOrWhitespace(currentSearchQueryDisplay)" v-html="searchResultsText"></h1>
-          <div class="mt-2 mb-4">
-            <p><b>Including from:</b></p>
-            <Flag class="mr-2" :country="country" v-for="country in currentSelectedCountries" />
+          <div id="header">
+            <h1 class="is-size-3" v-html="searchResultsText" v-if="!isNullEmptyOrWhitespace(currentSearchQueryDisplay)"></h1>
+            <div class="mt-2 mb-4">
+              <p><b>Including from:</b></p>
+              <Flag class="mr-2" :country="country" v-for="country in currentSelectedCountries" />
+            </div>
           </div>
-          <div v-if="!appError" class="columns is-flex-wrap-wrap">
-            <Card v-for="dougScore in store.searchResults?.dougScores" :key="dougScore.id" :doug-score="dougScore" />
-          </div>
-          <div v-if="appError">
-            <Notification :dismissible="false" :appError="appError" />
+
+          <div id="search-results">
+            <div class="is-flex is-justify-content-flex-end mb-4" v-if="!isNullEmptyOrWhitespace(currentSearchQueryDisplay)">
+              <div class="field is-fullwidth">
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select>
+                      <option v-for="option in sortByOptions" :value="option.value">
+                        {{ option.text }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="!appError" class="columns is-flex-wrap-wrap">
+              <Card v-for="dougScore in store.searchResults?.dougScores" :key="dougScore.id" :doug-score="dougScore" />
+            </div>
+            <div v-if="appError">
+              <Notification :dismissible="false" :appError="appError" />
+            </div>
           </div>
         </div>
       </div>
@@ -24,7 +42,8 @@ import { computed } from "vue";
 import Card from "../components/Card.vue";
 import Flag from "../components/Flag.vue";
 import Notification from "../components/Notification.vue";
-import messages from "../constants/messages";
+import { messages } from "../constants";
+import { sortByOptions } from "../constants/sortOptions";
 import { AppError } from "../models/common";
 import { AppErrorType } from "../models/enums/error";
 import { store } from "../store";

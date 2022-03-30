@@ -1,4 +1,4 @@
-import messages from '../constants/messages';
+import { messages } from '../constants';
 import { APIResponse } from '../models/common';
 import { AppErrorType } from '../models/enums/error';
 import { FeaturedDougScoresResponse, SearchDougScoresResponse } from '../models/response';
@@ -67,7 +67,7 @@ export async function getDougScores ( sortBy: Caches ): Promise<APIResponse<Sear
 
 export async function searchDougScores ( { minYear, maxYear, make, model, originCountries, sortByOption }: SearchQuery ): Promise<APIResponse<SearchDougScoresResponse>> {
     try {
-        let url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/search?minYear=${minYear}&maxYear=${maxYear}&pageSize=15`;
+        let url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/search?minYear=${minYear}&maxYear=${maxYear}&pageSize=24`;
 
         url += !isNullEmptyOrWhitespace( make ) ? `&make=${make}` : '';
         url += !isNullEmptyOrWhitespace( model ) ? `&model=${model}` : '';
