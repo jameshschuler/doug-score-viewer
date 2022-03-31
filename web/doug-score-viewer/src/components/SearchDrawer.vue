@@ -3,15 +3,12 @@
     <div class="slideout">
       <div class="slideout-header">
         <h1 class="is-size-4 has-text-weight-semibold">Search DougScores</h1>
-        <button href="#" class="button is-ghost slideout-close" title="Close" @click="store.toggleSearchDrawer()">
+        <button class="button is-ghost slideout-close" title="Close" @click="store.toggleSearchDrawer()">
           <i class="fa fa-times fa-lg"></i>
         </button>
       </div>
       <div class="columns">
         <div class="column is-10 is-offset-1">
-          <div class="mb-3" v-if="!searching && appError">
-            <Notification :dismissible="false" :appError="appError" />
-          </div>
           <Message
             message="<p><b>Tip!</b> Press <kbd class='kbc-button kbc-button-xxs'>Ctrl</kbd> + <kbd class='kbc-button kbc-button-xxs'>q</kbd> to toggle this search drawer.</p>"
           />
@@ -87,48 +84,38 @@ import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { Countries, initialSearchQuery } from "../constants";
 import { SortBy, sortByOptions } from "../constants/sortOptions";
-import { AppError } from "../models/common";
 import { Country, SelectableCountry } from "../models/country";
-import { AppErrorType } from "../models/enums/error";
 import { SearchQuery } from "../models/searchQuery";
 import { getMakeOptions, getModelOptions } from "../services/dataService";
-import { searchDougScores } from "../services/dougScoreService";
 import { store } from "../store";
-import { getUrlSearchParams } from "../store/actions";
+import { getUrlSearchParams } from "../utils";
 import { getYearOptions } from "../utils/options";
 import { isNullEmptyOrWhitespace } from "../utils/strings";
 import CountryTags from "./CountryTags.vue";
 import DynamicDropdown from "./DynamicDropdown.vue";
 import Message from "./Message.vue";
-import Notification from "./Notification.vue";
 
 const router = useRouter();
 const yearOptions = computed(() => getYearOptions());
 
 const formData = ref<SearchQuery>(initialSearchQuery);
+const searching = ref<boolean>(false);
 
 if (store.currentSearchQuery !== null) {
   formData.value = store.currentSearchQuery;
 }
 
-const appError = ref<AppError>();
-const searching = ref<boolean>(false);
-
 async function handleSearch() {
   searching.value = true;
-  const response = await searchDougScores({ ...formData.value });
-  if (response.error && response.error.errorType === AppErrorType.BadRequest) {
-    appError.value = response.error;
-  } else {
-    store.toggleSearchDrawer();
-    store.setSearchResults(response.data);
-    store.setCurrentSearchQuery({ ...formData.value });
+  await store.searchDougScores({ ...formData.value });
+  searching.value = false;
 
-    const params = getUrlSearchParams(store.currentSearchQuery);
+  const params = getUrlSearchParams(store.currentSearchQuery);
+  if (isNullEmptyOrWhitespace(params)) {
+    await router.push("/search/results");
+  } else {
     await router.push(`/search/results${params}`);
   }
-
-  searching.value = false;
 }
 
 function resetForm() {
@@ -147,7 +134,6 @@ function resetForm() {
     ],
     sortByOption: SortBy.TotalDougScoreDesc,
   };
-  appError.value = undefined;
 }
 </script>
 <style lang="scss" scoped>

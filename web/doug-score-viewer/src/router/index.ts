@@ -4,7 +4,7 @@ import Error from '../pages/Error.vue';
 import Landing from '../pages/Landing.vue';
 import NotFound from '../pages/NotFound.vue';
 import SearchResults from '../pages/SearchResults.vue';
-import { handleSearchFromUrl } from '../store/actions';
+import { store } from '../store';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -21,8 +21,8 @@ const routes: Array<RouteRecordRaw> = [
         path: '/search/results',
         name: 'SearchResults',
         component: SearchResults,
-        beforeEnter: async ( to: RouteLocationNormalized ) => {
-            await handleSearchFromUrl( to.query );
+        beforeEnter: ( to: RouteLocationNormalized ) => {
+            store.handleSearchFromUrl( to.query );
 
             return true;
         },

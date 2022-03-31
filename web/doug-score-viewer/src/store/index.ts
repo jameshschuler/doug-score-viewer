@@ -1,9 +1,12 @@
 import { reactive } from 'vue';
+import { LocationQuery } from 'vue-router';
+import { Countries } from '../constants';
 import { SortBy } from '../constants/sortOptions';
 import { AppError } from '../models/common';
-import { SelectableCountry } from '../models/country';
+import { Country, SelectableCountry } from '../models/country';
 import { SearchDougScoresResponse } from '../models/response';
 import { SearchQuery } from '../models/searchQuery';
+import dougScoreService from '../services/dougScoreService';
 import { isNullEmptyOrWhitespace } from '../utils/strings';
 
 interface StoreState {
@@ -14,12 +17,13 @@ interface StoreState {
     searchResults: SearchDougScoresResponse | null;
     currentCountries: SelectableCountry[];
     getCurrentSortByOption: () => SortBy;
+    handleSearchFromUrl: ( query: LocationQuery ) => Promise<void>;
+    searchDougScores: ( query: SearchQuery ) => Promise<void>;
     setCurrentSearchQuery: ( searchQuery: SearchQuery ) => void;
     setError: ( appError: AppError ) => void;
     setLoading: ( value: boolean ) => void;
     setSearchResults: ( data?: SearchDougScoresResponse ) => void;
-    setSortByOption: ( sortByOption: SortBy ) => void;
-    toggleSearchDrawer: Function,
+    toggleSearchDrawer: ( state?: boolean ) => void,
 }
 
 export const store = reactive<StoreState>( {
@@ -30,11 +34,60 @@ export const store = reactive<StoreState>( {
     currentCountries: [],
     currentSearchQuery: null,
     getCurrentSortByOption (): SortBy {
-        if ( !isNullEmptyOrWhitespace( store.currentSearchQuery?.sortByOption ) ) {
-            return store.currentSearchQuery?.sortByOption as SortBy;
+        if ( !isNullEmptyOrWhitespace( this.currentSearchQuery?.sortByOption ) ) {
+            return this.currentSearchQuery?.sortByOption as SortBy;
         }
 
         return SortBy.TotalDougScoreDesc;
+    },
+    async handleSearchFromUrl ( query: LocationQuery ) {
+        if ( Object.keys( query ).length === 0 || this.searchResults !== null ) {
+            return;
+        }
+
+        this.setLoading( true );
+
+        const { make, model, minYear, maxYear, sortBy, originCountries } = query;
+        const selectedCountryNames = !isNullEmptyOrWhitespace( originCountries ) ?
+            originCountries!.toString().split( ',' ) : [];
+
+        let countries = Countries.map( ( country: Country ) => {
+            return {
+                ...country,
+                selected: selectedCountryNames.includes( country.name )
+            };
+        } );
+
+        const searchQuery = {
+            make: !isNullEmptyOrWhitespace( make ) ? make!.toString() : '',
+            model: !isNullEmptyOrWhitespace( model ) ? model!.toString() : '',
+            minYear: !isNullEmptyOrWhitespace( minYear ) ? minYear!.toString() : '1960',
+            maxYear: !isNullEmptyOrWhitespace( maxYear ) ? maxYear!.toString() : new Date().getUTCFullYear().toString(),
+            sortByOption: !isNullEmptyOrWhitespace( sortBy ) ? sortBy!.toString() : SortBy.TotalDougScoreDesc,
+            originCountries: countries
+        };
+        const response = await dougScoreService.searchDougScores( searchQuery );
+
+        if ( response.error ) {
+            this.setError( response.error );
+        } else {
+            this.setSearchResults( response.data );
+        }
+
+        this.setCurrentSearchQuery( searchQuery );
+        this.setLoading( false );
+    },
+    async searchDougScores ( query: SearchQuery ) {
+        const response = await dougScoreService.searchDougScores( query );
+        this.toggleSearchDrawer( false );
+
+        if ( response.error ) {
+            this.setError( response.error );
+        } else {
+            this.setSearchResults( response.data );
+        }
+
+        this.setCurrentSearchQuery( query );
     },
     setError ( appError: AppError ) {
         this.error = appError ?? null;
@@ -48,15 +101,14 @@ export const store = reactive<StoreState>( {
             this.currentCountries = this.currentSearchQuery.originCountries.filter( c => c.selected );
         }
     },
-    toggleSearchDrawer () {
-        this.isSearchDrawerOpen = !this.isSearchDrawerOpen;
+    toggleSearchDrawer ( state?: boolean ) {
+        if ( state !== undefined ) {
+            this.isSearchDrawerOpen = state;
+        } else {
+            this.isSearchDrawerOpen = !this.isSearchDrawerOpen;
+        }
     },
     setSearchResults ( data?: SearchDougScoresResponse ) {
         this.searchResults = data ?? null;
-    },
-    setSortByOption ( sortByOption: SortBy ) {
-        if ( this.currentSearchQuery !== null ) {
-            this.currentSearchQuery.sortByOption = sortByOption;
-        }
     }
 } );

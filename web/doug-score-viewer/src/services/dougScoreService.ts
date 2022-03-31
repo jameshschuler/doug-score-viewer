@@ -65,7 +65,7 @@ export async function getDougScores ( sortBy: Caches ): Promise<APIResponse<Sear
     }
 }
 
-export async function searchDougScores ( { minYear, maxYear, make, model, originCountries, sortByOption }: SearchQuery ): Promise<APIResponse<SearchDougScoresResponse>> {
+async function searchDougScores ( { minYear, maxYear, make, model, originCountries, sortByOption }: SearchQuery ): Promise<APIResponse<SearchDougScoresResponse>> {
     try {
         let url = `${import.meta.env.VITE_API_BASE_URL}/api/v1/dougscore/search?minYear=${minYear}&maxYear=${maxYear}&pageSize=24`;
 
@@ -101,4 +101,8 @@ export async function searchDougScores ( { minYear, maxYear, make, model, origin
             }
         };
     }
+}
+
+export default {
+    searchDougScores
 }

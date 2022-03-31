@@ -1,5 +1,8 @@
 import { Countries } from '../constants/countries';
+import { SortBy } from '../constants/sortOptions';
 import { Country } from '../models/country';
+import { SearchQuery } from '../models/searchQuery';
+import { isNullEmptyOrWhitespace } from './strings';
 
 export function getFlagIcon ( flagIconName: string ): string {
     const url = new URL( `../assets/flags/${flagIconName}.png`, import.meta.url ).href;
@@ -32,4 +35,23 @@ export function getScoreBracket ( score: number ): string {
     }
 
     return result;
+}
+
+export function getUrlSearchParams ( query: SearchQuery | null ) {
+    if ( query === null ) {
+        return;
+    }
+
+    const { make, model, minYear, maxYear, sortByOption, originCountries } = query;
+    let params = `?minYear=${minYear}&maxYear=${maxYear}`;
+    params += !isNullEmptyOrWhitespace( make ) ? `&make=${make}` : '';
+    params += !isNullEmptyOrWhitespace( model ) ? `&model=${model}` : '';
+    params += !isNullEmptyOrWhitespace( sortByOption ) ? `&sortBy=${sortByOption}` : SortBy.TotalDougScoreDesc;
+
+    const selectedCountries = originCountries.filter( c => c.selected );
+    if ( selectedCountries.length > 0 ) {
+        params += `&originCountries=${selectedCountries.map( s => s.name )}`;
+    }
+
+    return params;
 }

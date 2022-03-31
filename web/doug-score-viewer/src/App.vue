@@ -1,3 +1,15 @@
+<template>
+  <div v-if="!store.loading">
+    <Navbar />
+    <main class="container is-fluid my-6">
+      <div class="columns">
+        <router-view class="column is-12-touch"></router-view>
+      </div>
+    </main>
+    <Footer />
+  </div>
+  <LoadingOverlay v-if="store.loading" />
+</template>
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import Footer from "./components/Footer.vue";
@@ -30,19 +42,6 @@ async function checkAPIHealth() {
 
 checkAPIHealth();
 </script>
-
-<template>
-  <div v-if="!store.loading">
-    <Navbar />
-    <main class="container is-fluid my-6">
-      <div class="columns">
-        <router-view class="column is-12-touch"></router-view>
-      </div>
-    </main>
-    <Footer />
-  </div>
-  <LoadingOverlay v-if="store.loading" />
-</template>
 
 <style lang="scss">
 * {
