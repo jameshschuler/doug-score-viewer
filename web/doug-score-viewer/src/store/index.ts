@@ -16,6 +16,7 @@ interface StoreState {
     loading: boolean;
     searchResults: SearchDougScoresResponse | null;
     currentCountries: SelectableCountry[];
+    searching: boolean;
     getCurrentSortByOption: () => SortBy;
     handleSearchFromUrl: ( query: LocationQuery ) => Promise<void>;
     searchDougScores: ( query: SearchQuery ) => Promise<void>;
@@ -33,6 +34,7 @@ export const store = reactive<StoreState>( {
     searchResults: null,
     currentCountries: [],
     currentSearchQuery: null,
+    searching: false,
     getCurrentSortByOption (): SortBy {
         if ( !isNullEmptyOrWhitespace( this.currentSearchQuery?.sortByOption ) ) {
             return this.currentSearchQuery?.sortByOption as SortBy;
@@ -78,6 +80,8 @@ export const store = reactive<StoreState>( {
         this.setLoading( false );
     },
     async searchDougScores ( query: SearchQuery ) {
+        this.searching = true;
+
         const response = await dougScoreService.searchDougScores( query );
         this.toggleSearchDrawer( false );
 
@@ -88,6 +92,7 @@ export const store = reactive<StoreState>( {
         }
 
         this.setCurrentSearchQuery( query );
+        this.searching = false;
     },
     setError ( appError: AppError ) {
         this.error = appError ?? null;

@@ -1,5 +1,5 @@
 <template>
-  <div class="is-flex is-justify-content-flex-end is-flex-direction-column is-align-items-flex-end mb-4" v-if="hasResults">
+  <div class="is-flex is-justify-content-flex-end is-flex-direction-column is-align-items-flex-end mb-4">
     <div class="field">
       <div class="control is-expanded">
         <div class="select is-fullwidth" :class="{ 'is-loading': loading }">
@@ -23,8 +23,6 @@ import { isNullEmptyOrWhitespace } from "../../utils/strings";
 
 const router = useRouter();
 const loading = ref<boolean>(false);
-
-const hasResults = computed(() => store.searchResults !== null && store.searchResults.dougScores.length !== 0);
 
 const currentSortByOption = ref<string>(store.getCurrentSortByOption());
 computed(() => {

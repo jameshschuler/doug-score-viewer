@@ -1,6 +1,6 @@
 <template>
   <div class="mt-4" id="search-results">
-    <SortByDropdown />
+    <SortByDropdown v-if="hasResults" />
 
     <div v-if="hasResults" class="columns is-flex-wrap-wrap">
       <Card v-for="dougScore in store.searchResults?.dougScores" :key="dougScore.id" :doug-score="dougScore" />

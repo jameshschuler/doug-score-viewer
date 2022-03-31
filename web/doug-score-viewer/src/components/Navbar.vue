@@ -16,7 +16,7 @@
 </template>
 <script setup lang="ts">
 import { store } from "../store";
-import SearchDrawer from "./SearchDrawer.vue";
+import SearchDrawer from "./Search/SearchDrawer.vue";
 </script>
 <style lang="scss" scoped>
 @import "bulma/sass/utilities/mixins.sass";

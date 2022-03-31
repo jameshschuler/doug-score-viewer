@@ -66,7 +66,7 @@
 
             <div class="field is-grouped">
               <div class="control mt-5">
-                <button :class="{ 'is-loading': searching }" type="submit" class="button is-success is-outlined">Search</button>
+                <button :class="{ 'is-loading': store.searching }" type="submit" class="button is-success is-outlined">Search</button>
               </div>
               <div class="control mt-5">
                 <button class="button is-outlined is-info" @click="resetForm" type="button">Reset</button>
@@ -82,33 +82,30 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import { Countries, initialSearchQuery } from "../constants";
-import { SortBy, sortByOptions } from "../constants/sortOptions";
-import { Country, SelectableCountry } from "../models/country";
-import { SearchQuery } from "../models/searchQuery";
-import { getMakeOptions, getModelOptions } from "../services/dataService";
-import { store } from "../store";
-import { getUrlSearchParams } from "../utils";
-import { getYearOptions } from "../utils/options";
-import { isNullEmptyOrWhitespace } from "../utils/strings";
-import CountryTags from "./CountryTags.vue";
-import DynamicDropdown from "./DynamicDropdown.vue";
-import Message from "./Message.vue";
+import { Countries, initialSearchQuery } from "../../constants";
+import { SortBy, sortByOptions } from "../../constants/sortOptions";
+import { Country, SelectableCountry } from "../../models/country";
+import { SearchQuery } from "../../models/searchQuery";
+import { getMakeOptions, getModelOptions } from "../../services/dataService";
+import { store } from "../../store";
+import { getUrlSearchParams } from "../../utils";
+import { getYearOptions } from "../../utils/options";
+import { isNullEmptyOrWhitespace } from "../../utils/strings";
+import CountryTags from "../CountryTags.vue";
+import DynamicDropdown from "../DynamicDropdown.vue";
+import Message from "../Message.vue";
 
 const router = useRouter();
 const yearOptions = computed(() => getYearOptions());
 
 const formData = ref<SearchQuery>(initialSearchQuery);
-const searching = ref<boolean>(false);
 
 if (store.currentSearchQuery !== null) {
   formData.value = store.currentSearchQuery;
 }
 
 async function handleSearch() {
-  searching.value = true;
   await store.searchDougScores({ ...formData.value });
-  searching.value = false;
 
   const params = getUrlSearchParams(store.currentSearchQuery);
   if (isNullEmptyOrWhitespace(params)) {

@@ -1,8 +1,8 @@
 <template>
   <div id="header" class="mb-5">
     <div class="is-flex is-justify-content-space-between is-align-items-center mb-1">
-      <h1 class="is-size-3" v-html="searchResultsText" v-if="!isNullEmptyOrWhitespace(currentSearchQueryDisplay)"></h1>
-      <button v-if="hasResults" @click="copyUrlToClipboard" class="button is-info is-light is-medium my-2">Share Results!</button>
+      <h1 class="is-size-3 is-size-4-mobile" v-html="searchResultsMessage"></h1>
+      <button v-if="hasResults" @click="copyUrlToClipboard" class="button is-info is-light is-medium">Share Results!</button>
     </div>
     <div v-if="currentSelectedCountries.length !== 0">
       <p><b>Including from:</b></p>
@@ -32,23 +32,42 @@ const currentSelectedCountries = computed(() => {
   return currentCountries && currentCountries.length !== 0 ? currentCountries : [];
 });
 
-const searchResultsText = computed(
-  () => `Showing ${store.searchResults?.currentCount ?? 0} DougScores for "<b>${currentSearchQueryDisplay.value}</b>"`
-);
-
-const currentSearchQueryDisplay = computed(() => {
-  const { currentSearchQuery } = store;
-  if (currentSearchQuery) {
-    const { make, model, minYear, maxYear } = currentSearchQuery;
-    let message = `${minYear}-${maxYear}`;
-
-    message += !isNullEmptyOrWhitespace(make) || !isNullEmptyOrWhitespace(model) ? ", " : "";
-    message += `${make} ${model}`.trim();
-
-    return message;
+const searchResultsMessage = computed(() => {
+  if (store.currentSearchQuery === null) {
+    return "";
   }
 
-  return null;
+  const count = store.searchResults?.currentCount ?? 0;
+  let message = `Showing ${count} DougScores between `;
+  const { make, model, minYear, maxYear } = store.currentSearchQuery;
+
+  message += `<span class="has-text-weight-medium">${minYear}</span> and <span class="has-text-weight-medium">${maxYear}</span>`;
+
+  if (!isNullEmptyOrWhitespace(make)) {
+    message += ` for <span class="has-text-weight-medium">${make}</span>`;
+  }
+
+  if (!isNullEmptyOrWhitespace(model)) {
+    message += !isNullEmptyOrWhitespace(make) ? "" : " for";
+    message += ` <span class="has-text-weight-medium">${model}</span>`;
+  }
+
+  return message;
 });
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+@import "bulma/sass/utilities/mixins.sass";
+
+#header {
+  div:first-child {
+    @include mobile {
+      flex-direction: column-reverse;
+      align-items: stretch;
+
+      button {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}
+</style>
