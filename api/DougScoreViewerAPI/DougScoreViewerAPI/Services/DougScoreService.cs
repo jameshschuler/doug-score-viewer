@@ -168,10 +168,10 @@ public class DougScoreService : IDougScoreService
 
         if (_context.DougScores!.Any())
         {
-            throw new AppException("DougScores were already synced.");
+             throw new AppException("DougScores were already synced.");
         }
 
-        var path = Path.Combine(_environment.ContentRootPath, "Data", "DougScore.xlsx");
+        var path = Path.Combine(_environment.ContentRootPath, "Data", "DougScore_12052022.xlsx");
         var wb = new XLWorkbook(path, XLEventTracking.Disabled);
 
         var ws = wb.Worksheet("DougScore");
@@ -181,22 +181,22 @@ public class DougScoreService : IDougScoreService
         _logger.LogInformation("Found {rowCount} rows...", rows.Count());
         
         var uploadId = Guid.NewGuid().ToString();
-        var dougScores = rows.Select(row => new DougScore()
+        var dougScores = rows.Select(row => new DougScore
         {
-            City = row.Cell(18).GetString(),
-            State = row.Cell(19).GetString(),
-            VideoLink = GetVideoLink(row.Cell(17)),
+            City = row.Cell(18).GetString().Trim(),
+            State = row.Cell(19).GetString().Trim(),
+            VideoLink = GetVideoLink(row.Cell(17)).Trim(),
             TotalDougScore = row.Cell(16).GetValue<int?>(),
             UploadId = uploadId,
             CreatedAt = DateTime.UtcNow,
-            Vehicle = new Vehicle()
+            Vehicle = new Vehicle
             {
                 Make = row.Cell(2).GetString().Trim(),
                 Model = row.Cell(3).GetString().Trim(),
-                Year = int.Parse(row.Cell(1).GetString()),
-                OriginCountry = row.Cell(20).GetString()
+                Year = int.TryParse(row.Cell(1).GetString().Trim(), out var year) ? year : -1,
+                OriginCountry = row.Cell(20).GetString().Trim()
             },
-            DailyScore = new DailyScore()
+            DailyScore = new DailyScore
             {
                 Features = row.Cell(10).GetValue<int>(),
                 Comfort = row.Cell(11).GetValue<int>(),
@@ -205,7 +205,7 @@ public class DougScoreService : IDougScoreService
                 Value = row.Cell(14).GetValue<int>(),
                 Total = row.Cell(15).GetValue<int>()
             },
-            WeekendScore = new WeekendScore()
+            WeekendScore = new WeekendScore
             {
                 Styling = row.Cell(4).GetValue<int>(),
                 Acceleration = row.Cell(5).GetValue<int>(),
@@ -215,17 +215,38 @@ public class DougScoreService : IDougScoreService
                 Total = row.Cell(9).GetValue<int>()
             }
         }).ToList();
+        
+        var oldCount = 0;
+        var dougScoresToAdd = new List<DougScore>();
+        foreach (var dougScore in dougScores)
+        {
+            var existingMatch = await _context.Vehicles!.FirstOrDefaultAsync(v => v.Year == dougScore.Vehicle!.Year
+                && v.Make!.Trim() == dougScore.Vehicle.Make
+                && v.Model!.Trim() == dougScore.Vehicle.Model);
 
-        _logger.LogInformation("Saving {dougScoresToBeSaved} rows...", dougScores.Count);
+            if (existingMatch is null)
+            {
+                dougScoresToAdd.Add(dougScore);
+            }
+            else
+            {
+                oldCount++;
+            }
+            
+        }
 
-        await _context!.DougScores!.AddRangeAsync(dougScores);
+        _logger.LogInformation("Found {dougScoreCount} existing DougScores...", oldCount);
+        _logger.LogInformation("Found {dougScoreCount} new DougScores...", dougScoresToAdd.Count);
+        _logger.LogInformation("Saving {dougScoresToBeSaved} rows...", dougScoresToAdd.Count);
+
+        await _context!.DougScores!.AddRangeAsync(dougScoresToAdd);
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("Saved DougScores!");
 
         return new ServiceResponse<SyncDougScoresResponse>
         {
-            Data = new SyncDougScoresResponse(dougScores.Count)
+            Data = new SyncDougScoresResponse(dougScoresToAdd.Count)
         };
     }
 
