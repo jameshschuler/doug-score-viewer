@@ -2,11 +2,19 @@
   <div class="field">
     <label class="label">{{ props.label }}</label>
     <div class="control">
-      <div class="select is-fullwidth" :class="{ 'is-loading': loading, 'is-danger': error }">
+      <div
+        class="select is-fullwidth"
+        :class="{ 'is-loading': loading, 'is-danger': error }"
+      >
         <select
           :disabled="props.disabled"
           v-model="selectedValue"
-          @change="$emit('update:selectedValue', ($event.target! as HTMLSelectElement).value)"
+          @change="
+            $emit(
+              'update:selectedValue',
+              ($event.target! as HTMLSelectElement).value
+            )
+          "
         >
           <option value="">Select {{ props.label }}</option>
           <option v-for="option in data" v-bind:value="option.value">
@@ -29,12 +37,13 @@ const props = defineProps({
   params: String,
   label: String,
   disabled: Boolean,
-  selectedValue: String,
 });
 
 const data = ref<Option[]>([]);
 const error = ref<string>();
 const loading = ref<boolean>();
+
+const selectedValue = ref<string>("");
 
 watch(
   () => props.params,
@@ -51,7 +60,9 @@ async function loadOptions() {
   if (props.dataEndpoint && !props.disabled) {
     loading.value = true;
 
-    const response = (await props.dataEndpoint!(props.params)) as APIResponse<OptionsResponse>;
+    const response = (await props.dataEndpoint!(
+      props.params
+    )) as APIResponse<OptionsResponse>;
 
     if (response.error) {
       error.value = response.error.message;
